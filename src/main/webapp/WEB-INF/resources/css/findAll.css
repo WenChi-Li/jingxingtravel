@@ -1,0 +1,52 @@
+@charset "UTF-8";
+
+#findall{
+
+    /* display: flex; */
+
+
+}
+.delete-button{
+  text-decoration: none;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* table, th, td {
+    border:1px solid black;
+  } */
+
+  .scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+  }
+  
+  .scroll-to-top a {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    line-height: 50px;
+    border-radius: 50%;
+    text-decoration: none;
+  }
+  
+  .scroll-to-top a:hover {
+    background-color: #0056b3;
+  }
+
+  .custom-swal {
+    width: 850px !important; /* 设置宽度为 600px，根据需要调整 */
+    max-width: 80%; /* 设置最大宽度，根据需要调整 */
+}
+
+
+  /* html{
+    font-size: 60px;
+  } */

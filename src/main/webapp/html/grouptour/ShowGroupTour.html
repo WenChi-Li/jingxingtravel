@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- bootstrap CSS  -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous" />
+
+  <title>後台行程專區</title>
+
+  <!-- bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+    crossorigin="anonymous"></script>
+  <script>
+    if (window.self !== window.top) {
+      window.top.location.href = window.self.location.href;
+    }
+  </script>
+  <style type="text/css">
+    .flex {
+      display: flex;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="flex" style="height: 100%; width: 100%">
+
+    <iframe src="/components/adminSidebar.jsp" width="20%" height="1000px"></iframe>
+    <div style="margin: 30px; width: 100%;" id="app">
+      <div class="text-center">
+        <h1>後台行程資料</h1>
+      </div>
+      <!-- 新增 -->
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+        data-bs-whatever="@mdo">新增</button>
+
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">新增行程</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form action="/GroupTourInsert.controller" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                  <label for="itineraryImage" class="col-form-label">行程縮圖:</label>
+                  <input type="file" id="itineraryImage" name="itineraryImage" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="itineraryName" class="col-form-label">行程名稱:</label>
+                  <input type="text" id="itineraryName" name="itineraryName" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="itineraryCode" class="col-form-label">行程代碼:</label>
+                  <input type="text" id="itineraryCode" name="itineraryCode" class="form-control"
+                    placeholder="範例:TW年月K1代碼，TW243K1001">
+                </div>
+                <div class="mb-3">
+                  <label for="featureImage1" class="col-form-label">特色照片1:</label>
+                  <input type="file" id="featureImage1" name="featureImage1" class="form-control">
+                  <label for="feature1" class="col-form-label">特色說明1:</label>
+                  <textarea id="feature1" name="feature1" class="form-control"></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="featureImage2" class="col-form-label">特色照片2:</label>
+                  <input type="file" id="featureImage2" name="featureImage2" class="form-control">
+                  <label for="feature2" class="col-form-label">特色說明2:</label>
+                  <textarea id="feature2" name="feature2" class="form-control"></textarea>
+                </div>
+
+                <div class="mb-3">
+                  <label for="itineraryContent" class="col-form-label">行程內容:</label>
+                  <textarea id="itineraryContent" name="itineraryContent" class="form-control"></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="seatCapacity" class="col-form-label">席次人數:</label>
+                  <input type="text" id="seatCapacity" name="seatCapacity" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="departureDate" class="col-form-label">去程日期:</label>
+                  <input type="date" id="departureDate" name="departureDate" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="departureTransport" class="col-form-label">去程交通:</label>
+                  <input type="text" id="departureTransport" name="departureTransport" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="returnDate" class="col-form-label">回程日期:</label>
+                  <input type="date" id="returnDate" name="returnDate" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="returnTransport" class="col-form-label">回程交通:</label>
+                  <input type="text" id="returnTransport" name="returnTransport" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="price" class="col-form-label">價格:</label>
+                  <input type="text" id="price" name="price" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="note" class="col-form-label">備註事項:</label>
+                  <textarea id="note" name="note" class="form-control"></textarea>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                  <button type="submit" class="btn btn-secondary">送出</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 顯示折疊 -->
+      <div class="accordion" id="accordionExample">
+        <div class="accordion-item" v-for="item in items" :key="item.groupTourID">
+          <h2 class="accordion-header" :id="'heading' + item.groupTourID">
+            <button class="accordion-button " type="button" data-bs-toggle="collapse"
+              :data-bs-target="'#collapse' + item.groupTourID" aria-expanded="true"
+              :aria-controls="'collapse' + item.groupTourID">
+              <table class="table align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th scope="col">縮圖</th>
+                    <th scope="col">行程名稱</th>
+                    <th scope="col">代碼</th>
+                    <th scope="col">行程照片1</th>
+                    <th scope="col">行程特色1</th>
+                    <th scope="col">行程照片2</th>
+                    <th scope="col">行程特色2</th>
+                    <th scope="col">功能</th>
+                  </tr>
+                </thead>
+                <!-- v-for="item in items" :key="item.groupTourID" -->
+                <tbody>
+                  <tr>
+                    <th scope="row">
+                      <img :src="'data:image/png;base64,' + item.itineraryImage" style="width: 50px; height: 50px" />
+                    </th>
+                    <td>{{ item.itineraryName }}</td>
+                    <td>{{ item.itineraryCode }}</td>
+                    <td>
+                      <img :src="'data:image/png;base64,' + item.featureImage1" style="width: 50px; height: 50px" />
+                    </td>
+                    <td>{{ item.feature1 }}</td>
+                    <td>
+                      <img :src="'data:image/png;base64,' + item.featureImage2" style="width: 50px; height: 50px" />
+                    </td>
+                    <td>{{ item.feature2 }}</td>
+                    <td>
+                      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#update"
+                        :value="item.groupTourID" id="transdata" data-bs-whatever="@mdo" @click="findPage">修改</button>
+                      <button @click="DeletePage(item.groupTourID)">刪除</button>
+                    </td>
+                  </tr>
+                </tbody>
+
+              </table>
+            </button>
+          </h2>
+          <div :id="'collapse' + item.groupTourID" class="accordion-collapse collapse "
+            aria-labelledby="'heading' + item.groupTourID" :data-bs-parent="'#accordionExample'">
+            <div class="accordion-body">
+              <table class="table align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th scope="col">行程內容</th>
+                    <th scope="col">席次人數</th>
+                    <th scope="col">去程日期</th>
+                    <th scope="col">去程交通</th>
+                    <th scope="col">回程日期</th>
+                    <th scope="col">回程交通</th>
+                    <th scope="col">價格</th>
+                    <th scope="col">注意事項</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ item.itineraryContent }}</td>
+                    <td>{{ item.seatCapacity }}</td>
+                    <td>{{ item.departureDate }}</td>
+                    <td>{{ item.departureTransport }}</td>
+                    <td>{{ item.returnDate }}</td>
+                    <td>{{ item.returnTransport }}</td>
+                    <td>{{ item.price }}</td>
+                    <td>{{ item.note }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 修改的跳出頁面 -->
+      <div class="modal fade" id="update" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">修改行程</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+              <form action="/GroupTourUpdateId.controller" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                  <label for="groupTourID" class="col-form-label">行程ID:</label>
+                  <input type="text" :value="groupTourinfo.groupTourID" id="groupTourID" name="groupTourID"
+                    class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="itineraryImage" class="col-form-label">行程縮圖:</label>
+                  <input type="file" id="itineraryImage" name="itineraryImage" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="itineraryName" class="col-form-label">行程名稱:</label>
+                  <input type="text" :value="groupTourinfo.itineraryName" id="itineraryName" name="itineraryName"
+                    class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="itineraryCode" class="col-form-label">行程代碼:</label>
+                  <input type="text" :value="groupTourinfo.itineraryCode" id="itineraryCode" name="itineraryCode"
+                    class="form-control" placeholder="TW2403001">
+                </div>
+                <div class="mb-3">
+                  <label for="featureImage1" class="col-form-label">特色照片1:</label>
+                  <input type="file" id="featureImage1" name="featureImage1" class="form-control">
+                  <label for="feature1" class="col-form-label">特色說明1:</label>
+                  <textarea id="feature1" :value="groupTourinfo.feature1" name="feature1"
+                    class="form-control"></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="featureImage2" class="col-form-label">特色照片2:</label>
+                  <input type="file" id="featureImage2" name="featureImage2" class="form-control">
+                  <label for="feature2" class="col-form-label">特色說明2:</label>
+                  <textarea id="feature2" :value="groupTourinfo.feature2" name="feature2"
+                    class="form-control"></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="itineraryContent" class="col-form-label">行程內容:</label>
+                  <textarea id="itineraryContent" :value="groupTourinfo.itineraryContent" name="itineraryContent"
+                    class="form-control"></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="seatCapacity" class="col-form-label">席次人數:</label>
+                  <input type="text" :value="groupTourinfo.seatCapacity" id="seatCapacity" name="seatCapacity"
+                    class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="departureDate" class="col-form-label">去程日期:</label>
+                  <input type="date" :value="groupTourinfo.departureDate" id="departureDate" name="departureDate"
+                    class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="departureTransport" class="col-form-label">去程交通:</label>
+                  <input type="text" :value="groupTourinfo.departureTransport" id="departureTransport"
+                    name="departureTransport" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="returnDate" class="col-form-label">回程日期:</label>
+                  <input type="date" :value="groupTourinfo.returnDate" id="returnDate" name="returnDate"
+                    class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="returnTransport" class="col-form-label">回程交通:</label>
+                  <input type="text" :value="groupTourinfo.returnTransport" id="returnTransport" name="returnTransport"
+                    class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="price" class="col-form-label">價格:</label>
+                  <input type="text" :value="groupTourinfo.price" id="price" name="price" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label for="note" class="col-form-label">備註事項:</label>
+                  <textarea id="note" :value="groupTourinfo.note" name="note" class="form-control"></textarea>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                  <button type="submit" class="btn btn-secondary" @click="UpdatePage">送出</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- 連到axios CDN  -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module">
+      // 連到Vue
+      import { createApp } from "https://www.unpkg.com/vue@3.4.19/dist/vue.esm-browser.prod.js";
+
+
+
+      const app = createApp({
+        data() {
+          return {
+            items: [],
+            isShow: true,
+            imagedata: "",
+            selectid: [],
+            groupTourinfo: {}
+          };
+        },
+        mounted() {
+          axios
+            .get("/GroupTourSelectAll.controller")
+            .then((response) => {
+              console.log(response);
+              this.items = response.data;
+              console.log(this.items);
+            })
+            .catch((error) => {
+              console.error("資料獲取失敗", error);
+              console.log("error" + error);
+            })
+        },
+        methods: {
+          findPage(e) {
+            console.log(e.target.value)
+            axios
+              .get('/GroupTourSelectId.controller/' + e.target.value)
+              .then((response) => {
+                this.groupTourinfo = response.data;
+                console.log(this.groupTourinfo)
+
+
+                console.log("新增成功", response);
+                console.log(response.data);
+              })
+              .catch((error) => {
+                console.log("更新失敗", error);
+              })
+          },
+          InsertPage() {
+            axios
+              .post('/GroupTourInsert.controller')
+              .then((response) => {
+                console.log("新增成功", response);
+              })
+              .catch((error) => {
+                console.log("更新失敗", error);
+              })
+          },
+          UpdatePage() {
+            axios
+              .post('/GroupTourUpdateId.controller')
+              .then((response) => {
+                console.log("更新成功", response);
+                window.location.href = "http://localhost:8080/html/grouptour/ShowGroupTour.html";
+              })
+              .catch((error) => {
+                console.log("更新失敗", error);
+              })
+          },
+          DeletePage(groupTourID) {
+            if (confirm("確定要刪除嗎？")) {
+              axios
+                .delete(`/GroupTourDelete.controller/${groupTourID}`)
+                .then((response) => {
+                  console.log("刪除成功", response);
+                  this.loadData();
+                })
+                .catch((error) => {
+                  console.error("刪除失敗", error);
+                });
+            }
+            window.location.href = "http://localhost:8080/html/grouptour/ShowGroupTour.html";
+          },
+        },
+      });
+
+      app.mount("#app");
+    </script>
+
+
+    <script src="https://unpkg.com/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script>
+    </script>
+
+
+
+</body>
+
+</html>

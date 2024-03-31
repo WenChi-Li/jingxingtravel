@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>下訂成功</title>
+
+    <!-- bootstrap CSS  -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+      crossorigin="anonymous"
+    />
+
+    
+    <!-- bootstrap -->
+    <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+    crossorigin="anonymous"
+    ></script>
+
+    
+<style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            background-color:rgba(208, 224, 242, 0.893)
+        }
+
+        h2 {
+            font-family: Helvetica;
+            font-size: 44px;
+            margin-top: 40px;
+            color: #333;
+            opacity: 0;
+            text-align: center;
+        }
+
+        h6{
+            font-family: Helvetica;
+            font-size: 20px;
+            margin-top: 30px;
+            color: #644a4a;
+            opacity: 0;
+            text-align: center;
+        }
+        button{
+            font-family: Helvetica;
+            font-size: 20px;
+            margin-top: 30px;
+            color: #644a4a;
+            opacity: 0;
+            text-align: center;
+        }
+
+        .circle {
+            stroke-dasharray: 1194;
+            stroke-dashoffset: 1194;
+        }
+
+        .tick {
+            stroke-dasharray: 350;
+            stroke-dashoffset: 350;
+        }
+
+        .checked {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 將內容置中 */
+        }
+
+        .checked .circle {
+            animation: circle 1s ease-in-out;
+            animation-fill-mode: forwards;
+        }
+
+        .checked .tick {
+            animation: tick .8s ease-out;
+            animation-fill-mode: forwards;
+            animation-delay: .95s;
+        }
+
+        .checked svg .circle {
+            animation: circle 1s ease-in-out;
+            animation-fill-mode: forwards;
+        }
+
+        .checked svg .tick {
+            animation: tick .8s ease-out;
+            animation-fill-mode: forwards;
+            animation-delay: .95s;
+        }
+
+        .checked h2 {
+            animation: title .6s ease-in-out;
+            animation-delay: 1.0s;
+            animation-fill-mode: forwards;
+        }
+        .checked h6 {
+            animation: title .6s ease-in-out;
+            animation-delay: 1.0s;
+            animation-fill-mode: forwards;
+        }
+        .checked button{
+            animation: title .6s ease-in-out;
+            animation-delay: 1.0s;
+            animation-fill-mode: forwards;
+        }
+        
+
+        @keyframes circle {
+            from {
+                stroke-dashoffset: 1194;
+            }
+            to{
+                stroke-dashoffset: 2388;
+            }
+        }
+
+        @keyframes tick {
+            from{
+                stroke-dashoffset: 350;
+            }
+            to{
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes title {
+            from {
+                opacity: 0;
+            }
+            to{
+                opacity: 1;
+            }
+        }
+
+        .disclaimer {
+            font-size: 14px;
+            text-align: justify;
+            margin-top: 20px;
+            color: gray;
+            padding: 0 20px; 
+            text-align: center; 
+        }
+
+    </style>
+
+
+
+</head>
+<body>
+    
+    
+    <div class="checked">
+        <svg width="400" height="400">
+            <circle fill="none" stroke="#68E534"
+                    stroke-width="20" cx="200" cy="200" r="190" class="circle" stroke-linecap="round" transform="rotate(-90 200 200)"/>
+            <polyline fill="none" stroke="#68E534" stroke-width="24" points="88,214 173,284 304,138" stroke-linecap="round" stroke-linejoin="round" class="tick"/>
+        </svg>
+        <h2>報名成功!!</h2>
+        <h6 >請至填寫的收件夾確認信件</h6>
+        <h6 >若有任何問題，請洽李專員</h6>
+        <h6 >Phone : 09xx-xxx-xxx</h6>
+
+        <button type="button" class="btn btn-outline-primary btn-lg" onclick="redirectToTravelPage()">☸︎ 回旅遊專區 ☸︎</button>
+        
+        <div class="disclaimer">
+            <p>本網站所提供的所有信息僅供參考和信息目的。我們已盡力確保信息的準確性，但不對其進行任何形式的明示或暗示擔保，包括但不限於對信息的適用性、可靠性、完整性或適時性的擔保。對於使用本網站提供的信息而導致的任何損失或損害，我們概不負責。</p>
+            <p>本網站可能包含第三方提供的外部鏈接。這些外部鏈接僅供方便使用者參考。我們對這些外部鏈接的內容、準確性、完整性或可用性不承擔任何責任。使用者訪問任何此類外部鏈接時，應自行承擔風險。</p>
+            <p>我們保留權利隨時更改本網站的內容，包括但不限於價格、產品規格、服務條款等，恕不另行通知。對於因信息更改而導致的任何損失或損害，我們概不負責。</p>
+            <p>使用本網站所提供的任何產品或服務時，應詳細閱讀並理解相關的使用條款和免責聲明。對於因使用本網站產品或服務而導致的任何直接、間接、附帶、特殊或衍生損失，我們概不負責。</p>
+            <p>請注意，本免責聲明構成了您與本網站之間的協議。使用本網站即表示您同意遵守本免責聲明中的所有條款和條件。如果您不同意這些條款和條件，請停止使用本網站。</p>
+        </div>
+
+    
+    </div>
+
+    <script>
+        function redirectToTravelPage() {
+            window.location.href = "http://localhost:8080/html/grouptour/GroupTourUser.html";
+        }
+    </script>
+
+</body>
+</html>

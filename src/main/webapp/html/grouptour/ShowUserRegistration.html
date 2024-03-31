@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+
+    
+    <!-- bootstrap CSS  -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+      crossorigin="anonymous"
+    />
+
+    <!-- bootstrap -->
+    <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+    crossorigin="anonymous"
+    ></script>
+    
+    <link href="../css/ShowUserGroupTour.css" rel="stylesheet">
+
+    <title>查看單一產品專區</title>
+
+  </head>
+  <body id="app">
+
+    
+
+   <section class="about_history_area section_gap d-flex justify-content-center align-items-center" style="margin-top: 200px;">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-md-6 order-md-2">
+        <img v-if="items.groupTourBean && items.groupTourBean.itineraryImage" 
+             :src="'data:image/png;base64,' + items.groupTourBean.itineraryImage" 
+             class="card-img-top" alt="Product Image">
+      </div>
+      <div class="col-md-6 order-md-1">
+        <div class="about_content">
+          <h2 class="title title_color" v-if="items.groupTourBean && items.groupTourBean.itineraryName" style="font-weight: bold; color: #df96a1;">產品名稱 : {{items.groupTourBean.itineraryName}}</h2>
+          <br><p v-if="items.groupTourBean && items.groupTourBean.itineraryCode">產品代碼 : {{items.groupTourBean.itineraryCode}}</p>
+          <p class="card-text" v-if="items.groupTourBean && items.groupTourBean.feature1">產品介紹 : {{items.groupTourBean.feature1}}</p>
+          <h5 class="card-title">報名表詳情</h5>
+          <p class="card-text">報名ID : {{items.groupTourOrdersID}}</p>
+          <p class="card-text">聯絡人姓名 : {{items.customerName}}</p>
+          <p class="card-text">聯絡人電話 : {{items.customerPhone}}</p>
+          <p class="card-text">報名人數 : {{items.quantity}}人</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    
+    
+        
+
+
+    <!-- 連到axios CDN  -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="module">
+      // 連到Vue
+      import { createApp } from "https://www.unpkg.com/vue@3.4.19/dist/vue.esm-browser.prod.js";
+
+
+      const app = createApp({
+        data() {
+          return {
+            items: [],
+            
+            groupTourOrdersID: null,
+
+          };
+        },
+        mounted() {
+          const urlParams = new URLSearchParams(window.location.search);
+          this.groupTourOrdersID = urlParams.get('groupTourOrdersID');
+          axios
+            .get(`/GroupTourOrdersSelectId.controller/${this.groupTourOrdersID}`)
+            .then((response) => {
+              console.log(response);
+              this.items = response.data;
+              console.log(this.items);
+            })
+            .catch((error) => {
+              console.error("資料獲取失敗", error);
+              console.log("error" + error);
+            })
+          },
+        methods: {
+          
+        },
+      });
+
+      app.mount("#app");
+    </script>
+  </body>
+</html>

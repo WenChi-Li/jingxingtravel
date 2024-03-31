@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>境行租車</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Bootstrap icons-->
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" /> -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+
+
+
+
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="css/styles.css" rel="stylesheet" />
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+
+
+        function fetchData() {
+            console.log(`fetchData`)
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: 'get',
+                    url: '/findAllCarModel',
+                    success: function (response) {
+                        resolve(response);
+                        console.log(`success`)
+
+                    },
+                    error: function (error) {
+                        reject(error);
+                        console.log(`error`)
+                    }
+                });
+            });
+        }
+
+
+
+        $(function () {
+            fetchData().then(response => {
+                // 在这里处理获取到的数据
+                console.log(response);
+                console.log(response)
+                var result = '';
+               
+                // })
+
+                $.each(response, function (index, object) {
+                    result += ' <div class="col-lg-4 mb-5">';
+                    result += '     <div class="card h-100 shadow border-0">';
+                    result += '         <img class="card-img-top" src="' + object.base64 + '" alt="..." />';
+                    result += '         <div class="card-body p-4">';
+                    result += '             <div class="badge bg-primary bg-gradient rounded-pill mb-2"></div>';
+                    result += '             <h5 class="card-title mb-3" id="carmodelname">' + object.carmodelname + '</h5>';
+                    result += '             <p class="card-text mb-0">' + object.seat + '人座</p>';
+                    result += '             <p class="card-text mb-0">' + object.baggage + '件行李</p>';
+                    result += '             <p class="card-text mb-0"></p>';
+                    result += '         </div>';
+                    result += '         <div class="card-footer p-4 pt-0 bg-transparent border-top-0 d-flex justify-content-between align-items-end">';
+                    result += '             <div>NT$' + object.cost + '<span>/天</span></div>';
+                    result += '             <button type="button" class="btn btn-success select-button" data-carmodelid="' + object.carmodelid + '">選擇<span class="badge bg-secondary"></span></button>';
+                    result += '         </div>';
+                    result += '     </div>';
+                    result += ' </div>';
+                });
+
+                $('#card').html(result);
+                // 可以在这里调用其他函数并传递数据
+                // processData(response);
+
+
+
+                // $(document).on('click', '.select-button', function () {
+                //     const carId = $(this).data('car-id');
+                //     console.log(carId);
+                //     // 将车辆ID作为查询参数添加到URL中并重定向到结帐页面
+                //     // window.location.href = '/order.html?carId=' + carId;
+                // });
+                console.log(data);
+
+                // $('.select-button').click(function () {
+                //     const carId = $(this).data('car-id');
+                //     console.log(carId);
+                //     // window.location.href = '/html/rentcar/order.html?carId=' + carId;
+                // })
+            }).catch(error => {
+                // console.log(error);
+            });
+            // $('.select-button').click(function () {
+            //     const carId = $(this).data('car-id');
+            //     console.log(carId);
+            //     window.location.href = '/html/rentcar/order.html?carId=' + carId;
+            // })
+
+
+
+        });//$function結束點
+
+
+        //選擇按鈕  
+        $(document).on('click', '.select-button', function () {
+            
+            const carmodelid = $(this).data('carmodelid');
+            console.log(carmodelid);
+
+
+            findCarModelById(carmodelid).then(carmodel => {
+
+                var days = $('#submitButton .badge').text();
+
+                sessionStorage.setItem('selectedCar', JSON.stringify(carmodel))
+                sessionStorage.setItem('pickupDate', $('#pickupDate').val())
+                sessionStorage.setItem('returnDate', $('#returnDate').val())
+                sessionStorage.setItem('pickupTime', $('#pickupTime').val())
+                sessionStorage.setItem('returnTime', $('#returnTime').val())
+                // sessionStorage.setItem('days', days)
+                console.log(carmodel)
+
+                console.log(`success byid`)
+
+
+
+                // 将session信息作为对象保存到变量中
+                var sessionData = {
+                    selectedCar: carmodel,
+                    days: days
+                };
+
+                console.log(sessionData)
+                // 将session信息对象转换为JSON字符串，并对URL特殊字符进行编码
+                var sessionDataString = encodeURIComponent(JSON.stringify(sessionData));
+
+                // 构建新页面的URL
+                // var newPageUrl = '/html/rentcar/order.html?sessionData=' + sessionDataString;
+                // var newPageUrl = '/html/rentcar/order.html'
+
+                // localStorage.setItem('selectedCar', JSON.stringify(carmodel));
+                // localStorage.setItem('days', days);
+
+                // 在新标签页中打开新页面
+                // window.open('/html/rentcar/order.html', '_blank');
+                // 在新窗口中打开新页面
+                // window.open(newPageUrl, '_blank');
+
+                window.location.href = '/html/rentcar/order.html'
+                // window.open('/html/rentcar/order.html', '_blank');
+                // var currentPageUrl = window.location.href;
+
+                // 将session信息作为查询参数添加到URL中，并在新窗口中打开
+                // var newPageUrl = '/html/rentcar/order.html?sessionData=' + encodeURIComponent(JSON.stringify({ selectedCar: carmodel, days: days }));
+                // window.open(newPageUrl, '_blank');
+            }).catch(error => {
+                console.error('Error fetching car info:', error);
+            })
+            // 将车辆ID作为查询参数添加到URL中并重定向到结帐页面
+            // window.location.href = '/html/rentcar/order.html?carmodelid=' + carmodelid
+        });
+
+
+        function findCarModelById(carmodelid) {
+            var jsondataByid = {
+                "carmodelid": carmodelid
+            }
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: 'post',
+                    url: '/findCarModelById',
+                    data: JSON.stringify(jsondataByid),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        resolve(response)
+                        console.log(`success byid`)
+                    },
+                    error: function (error) {
+                        reject(error)
+                        console.log(`error by id`)
+                    }
+                })
+            })
+        }
+
+    </script>
+
+</head>
+
+
+<body class="d-flex flex-column h-100">
+    <div id="memberHeader" style="height: 150px;">
+        <div class="container">
+            
+		<div class="container" id="memberHeader">
+			<nav class="navbar navbar-expand-lg navbar-light">
+				<!-- Brand and toggle get grouped for better mobile display -->
+				<a class="navbar-brand logo_h" href="index.html" ><img src="/image/公司logo2.png" style="height: 100px;width: 100px; margin-right: 140px; margin-left: 30px;" alt=""></a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<!-- Collect the nav links, forms, and other content for toggling -->
+				<div  id="navbarSupportedContent">
+					<ul class="nav navbar-nav menu_nav ml-auto">
+						<li class="nav-item active" ><a class="nav-link" href="http://localhost:8080/index" style="font-size: 20px;">首頁</a></li> 
+
+
+
+						<li class="nav-item " v-if="logged == null"><a class="nav-link" :href="`${host}/login`" style="font-size: 20px;">會員中心</a></li>
+
+						<li class="nav-item " v-if="logged != null"><a class="nav-link" :href="`${host}/memberCenter`" style="font-size: 20px;">會員中心</a></li>
+
+
+
+						<li class="nav-item"><a class="nav-link" href="http://localhost:8080/searchpage" style="font-size: 20px;">找飯店</a></li>
+
+						<li class="nav-item"><a class="nav-link" href="index.html" style="font-size: 20px;">找租車</a></li>
+
+						<li class="nav-item submenu dropdown">
+							<a href="/forums" class="nav-link"  style="font-size: 20px;">論壇中心</a>
+							
+						</li> 
+						<li class="nav-item "><a class="nav-link" href="http://localhost:8080/html/grouptour/GroupTourUser.html" style="font-size: 20px;">旅遊</a></li>
+					</ul>
+				</div> 
+				<div class="col-md-3 text-end" v-if="logged == null">
+					<button type="button" class="btn btn-outline-primary me-2" @click="tologin">登入</button>
+					<button type="button" class="btn btn-primary" @click="toRegister">註冊</button>
+				</div>
+
+				<div class="col-md-3 text-end" v-if="logged != null">
+					使用者：<strong style="font-size: 17px">{{logged.userAcc}}&nbsp;&nbsp;</strong>
+					<button type="button" class="btn btn-primary" @click="logout">登出</button>
+				</div>
+			</nav>
+			
+		</div>
+        </div>
+
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://www.unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
+        <script type="module">
+            import { createApp } from "https://www.unpkg.com/vue@3.4.19/dist/vue.esm-browser.prod.js"
+            import { host } from '/js/url.js';
+            var jsonDataString = sessionStorage.getItem("loginStatus");
+
+            var jsonData = JSON.parse(jsonDataString);
+            const app = createApp({
+                data: function () {
+                    return {
+                        logged: jsonData,
+                        host: host
+                    }
+                }, methods: {
+                    logout: function () {
+                        sessionStorage.clear();
+                        window.location.href = host + "/logoutSuccess"
+                    },
+                    tologin: function () {
+                        window.location.href = host + "/login"
+                    },
+                    toRegister: function () {
+                        window.location.href = host + "/register"
+                    },
+                    toGroupTourData: function () {
+                        sessionStorage.setItem("catalog", "5");
+                        window.location.href = host + "/html/grouptour/ShowUserGroupTour.html"
+                    },
+                }
+
+            })
+            app.mount("#memberHeader");
+        </script>
+    </div>
+
+
+
+    
+
+
+            
+            <div class="container">
+                <h2>取車還車及日期選擇</h2>
+
+                <!-- <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="pickupSelect">取車地點：</label>
+                            <select id="pickupSelect" class="form-control" required>
+                                <option value="">請選擇取車地點</option>
+                                <option value="台北">台北</option>
+                                <option value="高雄">高雄</option>
+                                <option value="台中">台中</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="returnSelect">還車地點：</label>
+                            <select id="returnSelect" class="form-control" required>
+                                <option value="">請選擇還車地點</option>
+                            </select>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="pickupDate">取車日期：</label>
+                            <input type="date" id="pickupDate" class="form-control" required>
+                            <!-- <label for="pickupTime">取車時間：</label> -->
+                            <input type="time" id="pickupTime" class="form-control mt-2 m-0" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="returnDate">還車日期：</label>
+                            <input type="date" id="returnDate" class="form-control" required>
+                            <!-- <label for="returnTime">還車時間：</label> -->
+                            <input type="time" id="returnTime" class="form-control mt-2" required>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary position-relative" id="submitButton">
+                    搜尋
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+
+                        <span class="visually-hidden">unread messages</span>
+                    </span>
+                </button>
+                <!-- <button type="submit" class="btn btn-primary" id="submitButton">搜尋</button> -->
+            </div>
+
+            <div class="alert alert-danger" id="errorMsg" style="display: none;">
+                <p></p>
+            </div>
+    </div>
+  
+    <!-- Blog preview section-->
+    <section class="py-5">
+        <div class="container px-5 my-5">
+
+            <div class="row gx-5 justify-content-center">
+                <div class="col-lg-8 col-xl-6">
+                    <div class="text-center">
+                        <!-- <h2 class="fw-bolder">From our blog</h2> -->
+                        <h2 class="fw-bolder">開始您的旅程</h2>
+
+                        <!-- <p class="lead fw-normal text-muted mb-5">Lorem ipsum, dolor sit amet consectetur
+                                adipisicing elit. Eaque fugit ratione dicta mollitia. Officiis ad.</p> -->
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <!-- <div class="row  gx-5 "> -->
+            <div class="row row-cols-1 row-cols-md-3 gx-5 " id="card">
+
+
+
+
+
+
+
+
+                <!-- DEMO -->
+                <!-- <div class="col-lg-4 mb-5">
+                        <div class="card h-100 shadow border-0">
+                            <img class="card-img-top" src="https://dummyimage.com/600x350/ced4da/6c757d" alt="..." />
+                            <div class="card-body p-4">
+                                <div class="badge bg-primary bg-gradient rounded-pill mb-2">News</div>
+                                <a class="text-decoration-none link-dark stretched-link" href="#!">
+                                    <h5 class="card-title mb-3" id="carmodelname">BMW</h5>
+                                </a>
+                                <p class="card-text mb-0">Some quick example text to build on the card title and make up
+                                    the bulk of the card's content.</p> -->
+                <!-- <p class="card-text mb-0" id=""></p>
+                            </div>
+                            <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                                <div class="d-flex align-items-end justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <img class="rounded-circle me-3"
+                                            src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
+                                        <div class="small">
+                                            <div class="fw-bold">Kelly Rowan</div>
+                                            <div class="text-muted">March 12, 2023 &middot; 6 min read</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+            </div>
+
+
+
+
+
+            <!-- Call to action-->
+            <!-- <aside class="bg-primary bg-gradient rounded-3 p-4 p-sm-5 mt-5">
+                <div
+                    class="d-flex align-items-center justify-content-between flex-column flex-xl-row text-center text-xl-start">
+                    <div class="mb-4 mb-xl-0">
+                        <div class="fs-3 fw-bold text-white">New products, delivered to you.</div>
+                        <div class="text-white-50">Sign up for our newsletter for the latest updates.</div>
+                    </div>
+                    <div class="ms-xl-4">
+                        <div class="input-group mb-2">
+                            <input class="form-control" type="text" placeholder="Email address..."
+                                aria-label="Email address..." aria-describedby="button-newsletter" />
+                            <button class="btn btn-outline-light" id="button-newsletter" type="button">Sign
+                                up</button>
+                        </div>
+                        <div class="small text-white-50">We care about privacy, and will never share your data.
+                        </div>
+                    </div>
+                </div>
+            </aside> -->
+        </div>
+    </section>
+    </main>
+    <!-- Footer-->
+    <footer class="bg-dark py-4 mt-auto">
+        <div class="container px-5">
+            <div class="row align-items-center justify-content-between flex-column flex-sm-row">
+                <div class="col-auto">
+                    <div class="small m-0 text-white">Copyright &copy; Your Website 2023</div>
+                </div>
+                <div class="col-auto">
+                    <a class="link-light small" href="#!">Privacy</a>
+                    <span class="text-white mx-1">&middot;</span>
+                    <a class="link-light small" href="#!">Terms</a>
+                    <span class="text-white mx-1">&middot;</span>
+                    <a class="link-light small" href="#!">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    </div>
+    <!-- Bootstrap core JS-->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script> -->
+    <!-- Core theme JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+
+    <script>
+        // const pickupSelect = document.getElementById('pickupSelect');
+        // const returnSelect = document.getElementById('returnSelect');
+        const pickupDate = document.getElementById('pickupDate');
+        const returnDate = document.getElementById('returnDate');
+        const errorMsg = document.getElementById('errorMsg');
+        // const locations = {
+        //     台北: ['台北車站', '松山車站', '萬華車站'],
+        //     高雄: ['高雄車站', '左營車站', '新左營車站'],
+        //     台中: ['臺中車站', '新烏日車站', '烏日高鐵站'],
+        // };
+
+        // pickupSelect.addEventListener('change', () => {
+        //     const selectedLocation = pickupSelect.value;
+        //     const options = locations[selectedLocation];
+
+        //     returnSelect.options.length = 0;
+        //     returnSelect.options.add(new Option('請選擇還車地點', ''));
+
+        //     for (const option of options) {
+        //         returnSelect.options.add(new Option(option, option));
+        //     }
+
+        //     returnSelect.disabled = false;
+        // });
+
+        // returnSelect.addEventListener('change', () => {
+        //     // 在这里可以添加其他逻辑，例如确保取车和还车地点不同
+        // });
+
+        pickupDate.addEventListener('change', () => {
+            const today = new Date();
+            const selectedDate = new Date(pickupDate.value);
+
+            if (selectedDate < today) {
+                errorMsg.textContent = '取車日期不可早於當前日期';
+                errorMsg.style.display = 'block';
+                pickupDate.value = '';
+            } else {
+                errorMsg.style.display = 'none';
+            }
+
+            // 检查取车日期是否晚于还车日期，如果是，则重置还车日期
+            if (returnDate.value && selectedDate > new Date(returnDate.value)) {
+                errorMsg.textContent = '取車日期不可晚於還車日期';
+                errorMsg.style.display = 'block';
+                returnDate.value = '';
+            }
+        });
+
+        returnDate.addEventListener('change', () => {
+            const selectedPickupDate = new Date(pickupDate.value);
+            const selectedReturnDate = new Date(returnDate.value);
+
+            // 检查还车日期是否早于取车日期，如果是，则重置还车日期
+            if (selectedPickupDate > selectedReturnDate) {
+                errorMsg.textContent = '還車日期不可早於取車日期';
+                errorMsg.style.display = 'block';
+                returnDate.value = '';
+            } else {
+                errorMsg.style.display = 'none';
+            }
+        });
+
+        // submitButton.addEventListener('click', () => {
+        //     // 这里可以添加提交表单的逻辑
+        //     // 例如检查所有字段是否都填写正确，然后将数据提交到服务器
+        // });
+
+        $(document).on('change', '#pickupDate, #pickupTime, #returnDate, #returnTime', function () {
+            const pickupDateValue = $('#pickupDate').val();
+            const pickupTimeValue = $('#pickupTime').val();
+            const returnDateValue = $('#returnDate').val();
+            const returnTimeValue = $('#returnTime').val();
+
+            if (!pickupDateValue || !pickupTimeValue || !returnDateValue || !returnTimeValue) {
+                return;
+            }
+            // 获取取车和还车日期时间的完整值
+            const pickupDateTime = new Date(pickupDateValue + 'T' + pickupTimeValue);
+            const returnDateTime = new Date(returnDateValue + 'T' + returnTimeValue);
+
+            // 计算租车天数
+            let days = Math.ceil((returnDateTime - pickupDateTime) / (1000 * 60 * 60 * 24));
+            console.log(`days`, days)
+            console.log((returnDateTime - pickupDateTime) / (1000 * 60 * 60 * 24))
+            // 如果还车时间晚于取车时间，则天数加1
+            // if (returnTimeValue > pickupDateTime) {
+            //     console.log(`day++`)
+            //     days++;
+            // }
+            console.log(returnDateTime.getHours())
+            console.log(pickupDateTime.getHours())
+            // sessionStorage.getItem('days')
+            // if()
+            sessionStorage.setItem('days', days)
+            // if (sessionStorage.getItem('days') == null) {
+            //     sessionStorage.setItem('days', days)
+            // }
+
+            // 更新右侧车辆信息表中的天数显示位置
+            // sessionStorage.setItem('days', days)
+            $('#submitButton .badge').text(days + "天");
+
+        });
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // 获取当前时间
+            const currentTime = new Date();
+
+            // 设置取车时间为上午10:00
+            const pickupTimeInput = document.getElementById('pickupTime');
+            pickupTimeInput.value = '10:00';
+
+            // 设置还车时间为上午10:00
+            const returnTimeInput = document.getElementById('returnTime');
+            returnTimeInput.value = '10:00';
+
+
+            const currentDate = new Date();
+
+
+            // 计算三天后的日期
+            const threeDaysLater = new Date(currentDate);
+            threeDaysLater.setDate(currentDate.getDate() + 3);
+
+
+            // 计算六天后的日期
+            const sixDaysLater = new Date(currentDate);
+            sixDaysLater.setDate(currentDate.getDate() + 6);
+
+            const formatDate = date => {
+                const year = date.getFullYear();
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const day = date.getDate().toString().padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            // 设置取车日期为三天后的日期
+            const pickupDateInput = document.getElementById('pickupDate');
+            pickupDateInput.value = formatDate(threeDaysLater);
+
+            // 设置还车日期为六天后的日期
+            const returnDateInput = document.getElementById('returnDate');
+            returnDateInput.value = formatDate(sixDaysLater);
+            //預設數值都填入後執行一次計算天數的標籤
+            $('#pickupDate, #pickupTime, #returnDate, #returnTime').change();
+        });
+
+    </script>
+
+
+    <script src="js/scripts.js"></script>
+
+</body>
+
+</html>

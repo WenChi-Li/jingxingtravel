@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>後台會員租車資訊</title>
+    <!-- <link rel="stylesheet" href="./bootstrap-5.0.2/dist/css/bootstrap-grid.min.css"> -->
+    <!-- <link rel="stylesheet" href="custom.scss"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/findAll.css">
+    <!-- <link rel="stylesheet" href="./sweetalert2.min.css"> -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
+    <!-- <script src="./bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js"></script> -->
+    <script>
+        if (window.self !== window.top) {
+            window.top.location.href = window.self.location.href;
+        }
+    </script>
+
+    <style>
+        .dropdown {
+            list-style-type: none;
+            /* 隐藏列表项的小黑点 */
+        }
+    </style>
+
+    <script>
+
+        $(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            // 从路径参数中获取车型ID
+            const carmodelid = urlParams.get('id');
+            console.log(carmodelid)
+
+            // 发送请求到后端，获取对应车型的数据
+            $.ajax({
+                type: 'get',
+                url: '/cars/cars/' + carmodelid,
+                success: function (response) {
+                    // 在成功获取数据后，处理数据并展示在页面上
+                    console.log(response);
+                    // TODO: 在页面中展示车型数据
+                    console.log(response)
+                    var result = '';
+                    // console.log(response.length)
+                    // form-floating
+                    result += `<form class="findAll  "><table class="text-center  table   table-hover " ><thead  class="align-middle"><tr><th scope="col"  >CARID</th><th scope="col">車款</th><th scope="col">車牌號碼</th><th>金額</th><th>
+                         <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Dropdown</a>
+    <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="#">可用的</a></li>
+      <li><a class="dropdown-item" href="#">已出租</a></li>
+      <li><a class="dropdown-item" href="#">分類</a></li>
+     
+    </ul>
+  </li></th><th>選項</th><th>細節</th></tr></thead>`
+                    $.each(response, function (index, object) {
+
+                        result += "<tr class='" + object.carId + "row'><th row='scope' style='text-align:center;'><input type='text' class=' border-0 form-control-plaintext ' id='floatingInputValue'   placeholder='ID' value=" + object.carId + "   style='width:55px;text-align:center; margin: auto' readonly></th>"
+                        result += " <td>" + object.carModel.carmodelname + "</td>"
+                        result += "<td ><input type='text'  id='floatingInputValue' placeholder='ID' value=" + object.licensePlate + "   style='width:75px;text-align: center;  margin: auto' readonly  class=' border-0 form-control-plaintext'></td>"
+                        result += "<td>" + object.carCost + "</td><td>" + object.status + "</td>"
+                        result += `<td><a href="http://localhost:8080/cars/update/` + object.carId + `" class="update-button btn btn-primary " tabindex="-1" role="button" aria-disabled="true"  id="update` + object.carId + `">編輯</a>`
+                        result += `<a href="http://localhost:8080/cars/delete/` + object.carId + `" class="delete-button btn btn-primary " tabindex="-1" role="button" aria-disabled="true"  id="delete` + object.carId + `" style='margin-left:35px;'>刪除</a></td>`
+                        result += `<td><a href="http://localhost:8080/delete/` + object.carTypeID + `" class="delete-button btn btn-primary " tabindex="-1" role="button" aria-disabled="true"  id="delete` + object.carTypeID + `" style=''>資訊</a></td>`
+
+                        result += `</tr>`
+
+                    })
+                    result += "</table ></form>"
+
+                    $('#findall').html(result);
+                    console.log(`離開迴圈`)
+
+
+
+
+
+                    $('.update-button').click(function () {
+                        var updateUrl = $(this).attr('href');
+                        console.log(updateUrl)
+
+                        $.ajax({
+                            type: 'put',
+                            url: updateUrl,
+
+                            success: function (response) {
+
+
+
+                                console.log(response);
+                                console.log(response.carmodelid);
+
+
+                                console.log(`有此筆資料`)
+                                Swal.fire({
+
+                                    title: "更新資料",
+                                    icon: "warning",
+                                    html: '<input type="text" id="carmodelname" placeholder="車牌號碼" class="form-control mb-2" value="' + response.licensePlate + '">' +
+                                        '<input type="text" id="carType" placeholder="金額" class="form-control mb-2" value="' + response.carCost + '">' +
+
+                                        '狀態:<input type="radio" id="automatic" name="transmission"  value="可用的" class="ms-2 me-1">' +
+                                        '<label for="automatic">可用的</label>' +
+                                        '<input type="radio" id="Manual" name="transmission" value="已出租" class="ms-2 me-1">' +
+                                        '<label for="Manual">已出租</label><br>'
+
+                                    ,
+                                    didOpen: function () {
+                                        // 这里是在弹出窗口打开时执行的 JavaScript 代码
+                                        var status = response.status;
+
+                                        $('input[name="transmission"][value="' + status + '"]').prop('checked', true);
+
+
+                                    },
+                                    showCancelButton: true,
+                                    confirmButtonText: '修改',
+                                    cancelButtonText: '取消',
+
+                                    preConfirm: function () {
+                                        return new Promise(function (resolve, reject) {
+
+                                            console.log(`獲取輸入數值`)
+                                            // 獲取表單輸入的值
+                                            var carmodelname = $('#carmodelname').val();//車牌號碼
+                                            var carType = $('#carType').val();//金額
+                                            var seatValue = $('#seat').val();//
+                                            var baggageValue = $('#baggage').val();//
+                                            var imageUploadInput = $('#image_uploads');//
+                                            var imagePreview = $('#image_preview');//
+                                            console.log(imageUploadInput)
+                                            // 檢查座椅數量和行李數量是否為數字
+                                            if (!carmodelname || !carType) {
+                                                Swal.showValidationMessage('請填寫所有必填字段');
+                                                resolve();
+                                            }
+                                            else if (!$('input[name="transmission"]:checked').val()) {
+                                                Swal.showValidationMessage('請選擇傳動類型');
+                                                resolve();
+                                            }
+
+                                            else {
+                                                // 預覽圖片
+                                                console.log(`tetete`)
+
+                                                console.log(`tetete`)
+                                                console.log(response.carmodelid)
+                                                resolve({
+                                                    // carTypeID: response.carTypeID,
+                                                    carId: response.carId,
+                                                    licensePlate: carmodelname,
+                                                    carCost: carType,
+                                                    // seat: seatValue,
+                                                    // baggage: baggageValue,
+                                                    status: $('input[name="transmission"]:checked').val(),
+                                                    // fuelType: $('input[name="fuelType"]:checked').val(),
+                                                    // imageUploads: file,
+
+                                                });
+                                            }
+                                        })
+                                    }
+                                }).then(function (result) {
+                                    if (result.isConfirmed) {
+                                        // 處理表單提交
+                                        console.log($('input[name="transmission"]:checked').val()); // 正確獲取狀態的值
+                                        console.log(result);
+                                        console.log(response.carModel.carmodelid);
+                                        console.log(result.fuelType);
+                                        var formData = new FormData();
+                                        formData.append('carTypeID', response.carModel.carmodelid)
+                                        formData.append('carId', response.carId)
+                                        // formData.append('carTypeID', result.value.carTypeID)
+                                        formData.append('licensePlate', result.value.carmodelname); // 正確設置車牌號碼的值
+                                        formData.append('carCost', result.value.carType);//金額
+
+                                        formData.append('status', result.value.transmission);//狀態
+                                        console.log(formData)
+                                        // formData.append('fuelType', result.value.fuelType);
+
+                                        console.log(`資料準備送出`)
+                                        console.log(result.value.carmodelid);
+                                        console.log(response.carId);
+                                        console.log(response.carModel.carmodelid);
+                                        var json = {
+                                            carId: response.carId,
+                                            licensePlate: result.value.licensePlate,
+                                            status: result.value.status,
+                                            carCost: result.value.carCost,
+                                            carModel: {
+                                                carmodelid: response.carModel.carmodelid, // Assuming carTypeId is the ID of the car model
+                                                carmodelname: response.carModel.carmodelname,
+                                                carType: response.carModel.carType,
+                                                seat: response.carModel.seat,
+                                                baggage: response.carModel.baggage,
+                                                transmission: response.carModel.transmission,
+                                                fuelType: response.carModel.fuelType,
+                                                // Add other properties as needed
+                                            }
+                                        }
+                                        console.log(JSON.stringify(json));
+                                        $.ajax({
+                                            // url: '/updateData/' + response.carTypeID, // 后端处理页面的 URL
+                                            url: '/cars/updateData', // 后端处理页面的 URL
+                                            type: 'put',
+                                            // data: formData,
+                                            // processData: false,
+                                            // contentType: false,
+                                            contentType: 'application/json',
+                                            data: JSON.stringify(json),
+                                            success: function (response) {
+                                                Swal.fire('成功!', '您的資料已修改', 'success');
+                                                console.log(response)
+
+                                                console.log(`資料response成功`)
+                                                location.reload();//重新整理
+                                            },
+                                            error: function (xhr, status, error) {
+                                                Swal.fire('錯誤!', '表單提交失敗，請重試.', 'error');
+                                            }
+                                        })
+                                    }
+                                });
+
+                                // }
+                                // },
+                                //     error: function (error) {
+                                //         console.error('error', error);
+                                //     }
+                                // })
+                                // 阻止默认的链接跳转行为
+                                // return false;
+                            }
+                        })
+                        return false;
+
+                    })
+
+                    ///update
+
+
+
+
+
+
+                    $('.delete-button').click(function (event) {
+                        // 获取按钮的 href 属性值，即删除请求的 URL
+                        // event.preventDefault();
+                        // var deleteUrl = $('#delete' + object.carTypeID)
+                        var deleteUrl = $(this).attr('href');
+                        console.log(deleteUrl)
+                        // var rowId = deleteUrl.split('/').pop();
+                        // console.log(rowId)
+                        // $('#' + object.carTypeID + rowId).remove()             
+                        // 发送 AJAX 请求删除数据
+                        $.ajax({
+                            type: 'delete', // 使用 DELETE 方法
+                            url: deleteUrl,
+                            success: function (response2) {
+                                // 删除成功后的操作
+                                console.log('删除成功');
+                                // 刷新页面或执行其他操作
+                                // 刷新页面
+                                location.reload();
+                            },
+                            error: function (error) {
+                                // 处理错误
+                                console.error('删除失败', error);
+                            }
+                        });
+                        // 阻止默认的链接跳转行为
+                        return false;
+                    });
+
+                    $('#datainsert').click(function () {
+                        // 调用SweetAlert2
+                        Swal.fire({
+                            title: "更新資料",
+                            icon: "warning",
+                            html: '<input type="text" id="carmodelname" placeholder="車牌號碼" class="form-control mb-2" >' +
+                                '<input type="text" id="carType" placeholder="金額" class="form-control mb-2">' +
+
+                                '狀態:<input type="radio" id="automatic" name="transmission"  value="可用的" class="ms-2 me-1" checked>' +
+                                '<label for="automatic">可用的</label>' +
+                                '<input type="radio" id="Manual" name="transmission" value="已出租" class="ms-2 me-1">' +
+                                '<label for="Manual">已出租</label><br>'
+
+                            ,
+                            showCancelButton: true,
+                            confirmButtonText: '新增',
+                            cancelButtonText: '取消',
+
+                            preConfirm: function () {
+                                return new Promise(function (resolve, reject) {
+
+                                    // 獲取表單輸入的值
+                                    var carmodelname = $('#carmodelname').val();//車牌
+                                    var carType = $('#carType').val();//金額
+
+                                    if (!carmodelname || !carType) {
+                                        Swal.showValidationMessage('請填寫所有必填字段');
+                                        resolve();
+                                    }
+
+                                    else if (!$('input[name="transmission"]:checked').val()) {
+                                        Swal.showValidationMessage('請選擇狀態');
+                                        resolve();
+                                    }
+
+                                    else {
+                                        // 預覽圖片
+                                        console.log(`tetete`)
+
+
+                                    }
+                                    console.log(`tetete`)
+                                    resolve({
+                                        carmodelname: carmodelname,//車牌號碼\
+                                        carType: carType,//金額
+
+                                        transmission: $('input[name="transmission"]:checked').val(),
+
+                                    });
+                                })
+                            }
+
+                        }).then(function (result) {
+                            if (result.isConfirmed) {
+                                var json = {
+                                    // carId: response.carId, 不用給Id
+                                    licensePlate: result.value.carmodelname,
+                                    status: result.value.transmission,
+                                    carCost: result.value.carType,
+                                    carModel: {
+                                        carmodelid: carmodelid, // Assuming carTypeId is the ID of the car model
+
+                                    }
+                                }
+                                console.log(JSON.stringify(json));
+                                // 處理表單提交
+                                console.log($('input[name="transmission"]:checked').val()); // 正確獲取車型的值
+                                console.log(result);
+
+
+
+                                console.log(result.transmission);
+
+                                var formData = new FormData();
+                                formData.append('carmodelname', result.value.carmodelname); // 正確設置車型的值
+                                formData.append('carType', result.value.carType);
+
+                                formData.append('transmission', result.value.transmission);
+
+                                console.log(`資料準備送出`)
+
+                                $.ajax({
+                                    url: '/cars/insert.data', // 后端处理页面的 URL
+                                    type: 'POST',
+                                    // data: formData,
+                                    data: JSON.stringify(json),
+                                    contentType: 'application/json',
+                                    // processData: false,
+                                    // contentType: false,
+                                    success: function (response) {
+                                        Swal.fire('成功!', '您的車型已新增', 'success');
+                                        console.log(`response  insert`)
+                                        location.reload();
+                                    },
+                                    error: function (xhr, status, error) {
+                                        Swal.fire('錯誤!', '表單提交 失敗，請重試.', 'error');
+                                    }
+                                });
+                            }
+                        });
+
+                    });
+
+                }
+            });
+
+        })
+
+
+
+    </script>
+</head>
+
+<body>
+
+    <!-- <iframe src="../../components/adminSidebar.jsp" width="25%" height="600"></iframe> -->
+
+    <body style="background-color: rgb(237, 236, 236);">
+        <nav class="navbar navbar-light bg-light  fixed-top ">
+            <div class="container-fluid ">
+                <a class="navbar-brand">租車後台管理系統</a>
+                <form class="d-flex " id="myForm">
+
+                    <button class="btn btn-outline-success col-sm-2 " type="button" id="datainsert">新增資料</button>
+                    <label for="staticEmail" class="col-sm-2 col-form-label"
+                        style="margin-left:25px ;width:50px;">ID:</label>
+                    <input id="idSearch" class="form-control me-2 " type="text" placeholder="Search"
+                        aria-label="Search">
+                    <button class="btn btn-outline-success" type="button" id="idSearchButton">Search</button>
+                    <label for="staticEmail" class="col-sm-2 col-form-label" style="margin-left:25px ;width:50px;">
+                        name:</label>
+                    <input id="nameInput" class="form-control me-2 " type="search" placeholder="Search"
+                        aria-label="Search">
+                    <button class="btn btn-outline-success" type="button" id="nameSearchButton">Search</button>
+                </form>
+            </div>
+        </nav>
+
+        <div style="margin-top: 80px;"></div>
+        <div id="findall">
+        </div>
+
+
+        <button onclick="showAlert()">Click Me</button>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+
+        <script>
+            const showAlert = () => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Hi',
+                    text: 'Thanks for coming!',
+                })
+            }
+
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+            crossorigin="anonymous"></script>
+
+
+    </body>
+
+</html>

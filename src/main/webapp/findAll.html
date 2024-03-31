@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>查看全部資料</title>
+    <link rel="stylesheet" href="./bootstrap-5.0.2/dist/css/bootstrap-grid.min.css">
+    <!-- <link rel="stylesheet" href="custom.scss"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/findAll.css">
+    <!-- <link rel="stylesheet" href="./sweetalert2.min.css"> -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
+    <script src="./bootstrap-5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        if (window.self !== window.top) {
+            window.top.location.href = window.self.location.href;
+        }
+    </script>
+    <!-- 
+    <style>
+        .custom-swal {
+            width: 6000px !important;
+            /* 设置宽度为 600px，根据需要调整 */
+            max-width: 80%;
+            /* 设置最大宽度，根据需要调整 */
+        }
+    </style> -->
+    <script>
+        // window.onload = function () {
+        //     // 從後端獲取圖片資料並設置到input元素
+        //     // 這裡可以使用AJAX向後端發送請求獲取圖片資料
+
+        //     // 這裡是模擬的Base64圖片資料
+        //     // var base64Image = "data:null;base64,
+
+        //     // 將Base64圖片資料設置為input元素的值
+        //     var image = document.getElementById('image_uploads')
+        //     image.style.opacity = 0;
+        //     // image.value = base64Image;
+
+        //     // 顯示預覽圖片
+        //     var previewImage = document.getElementById('preview_image');
+        //     previewImage.src = base64Image;
+        //     previewImage.style.display = 'block';
+        // }
+        $(function () {
+            // findAll()
+
+            // function findAll() {
+            $.ajax({
+                type: 'get',
+                url: 'findAllCarModel',
+                success: function (response) {
+
+                    console.log(response)
+                    var result = '';
+                    // console.log(response.length)
+                    // form-floating
+                    result += '<form class="findAll  "><table class="text-center table align-middle table table-hover " ><thead><tr><th scope="col"  >ID</th><th scope="col">圖片</th><th scope="col">車款</th><th>級距</th><th>座椅</th><th>行李</th><th>排檔</th><th>燃料</th><th ">選項</th><th ">內容</th></tr></thead>'
+                    $.each(response, function (index, object) {
+                        // console.log(`success2`)
+                        console.log(response[index].carTypeID)
+                        // console.log(response[index].carmodelname)
+                        // console.log(response[index].carType)
+                        // console.log(response[index].airConditioning)
+                        // for (var i = 0; response.length; i++) {
+                        //     console.log(`進入迴圈`)
+                        //     console.log(response[i].carmodelname)
+                        //     console.log(response[i].carType)
+                        //     result += "<div>" + response[i].carmodelname + response[i].carType + "</div>"
+                        // }
+                        // <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="email@example.com">
+                        result += "<tr class='" + object.carTypeID + "row'><th row='scope' style='text-align:center;'><input type='text' class=' border-0 form-control-plaintext ' id='floatingInputValue'   placeholder='ID' value=" + object.carTypeID + "   style='width:55px;text-align:center; margin: auto' readonly></th>"
+                        result += " <td><img style='width:150px' class='img - thumbnail' src=" + object.base64 + "></td>"
+                        result += "<td ><input type='text'  id='floatingInputValue' placeholder='ID' value=" + object.carmodelname + "   style='width:55px;text-align: center;  margin: auto' readonly  class=' border-0 form-control-plaintext'></td>"
+                        result += "<td>" + object.carType + "</td><td>" + object.seat + "</td><td>" + object.baggage + "</td><td>" + object.transmission + "</td><td>" + object.fuelType + "</td>"
+                        result += `<td><a href="http://localhost:8081/update/` + object.carTypeID + `" class="update-button btn btn-primary " tabindex="-1" role="button" aria-disabled="true"  id="update` + object.carTypeID + `">編輯</a>`
+                        result += `<a href="http://localhost:8081/delete/` + object.carTypeID + `" class="delete-button btn btn-primary " tabindex="-1" role="button" aria-disabled="true"  id="delete` + object.carTypeID + `" style='margin-left:35px;'>刪除</a></td>`
+                        // result += `<td><a href="http://localhost:8081/delete/` + object.carTypeID + `" class="delete-button btn btn-primary " tabindex="-1" role="button" aria-disabled="true"  id="delete` + object.carTypeID + `">刪除</a></td>`
+
+                        // result += `<td><a href="http://localhost:8081/update/` + object.carTypeID + `" class="update-button btn btn-primary " tabindex="-1" role="button" aria-disabled="true"  id="update` + object.carTypeID + `">編輯</a></td>`
+                        result += `<td><a href="/cars.html?id=` + object.carTypeID + `" class="btn btn-primary " tabindex="-1" role="button" aria-disabled="true"  id="update` + object.carTypeID + `">內容</a></td>`
+                        result += `</tr>`
+                        // console.log(`迴圈中`)
+                        // console.log(object.base64)
+                    })
+                    result += "</table ></form>"
+                    // console.log(response.carTypeID)
+                    $('#findall').html(result);
+                    console.log(`離開迴圈`)
+                    //     }//dddd
+                    // })//ddddd
+
+
+
+
+
+
+
+                    $('.update-button').click(function () {
+                        var updateUrl = $(this).attr('href');
+                        console.log(updateUrl)
+
+                        $.ajax({
+                            type: 'put',
+                            url: updateUrl,
+                            // data: f,
+                            success: function (response) {
+
+                                // // 这里是在弹出窗口打开时执行的 JavaScript 代码
+                                // var transmissionValue = response.transmission;
+                                // console.log(transmissionValue)
+                                // $('input[name="transmission"][value="' + transmissionValue + '"]').prop('checked', true);
+
+                                // // 设置燃料类型单选按钮的值
+                                // var fuelTypeValue = response.fuelType;
+                                // $('input[name="fuelType"][value="' + fuelTypeValue + '"]').prop('checked', true);
+
+
+                                // 在按钮被点击时执行的 JavaScript 代码
+                                // alert('Button clicked!');
+
+
+
+
+                                console.log(response);
+                                console.log(response.carTypeID);
+
+                                // if (response == '') {
+                                console.log(`無此筆資料`)
+                                // } else {
+                                console.log(`有此筆資料`)
+                                Swal.fire({
+
+                                    title: "更新資料",
+                                    icon: "warning",
+                                    html: '<input type="text" id="carmodelname" placeholder="車型" class="form-control mb-2" value="' + response.carmodelname + '">' +
+                                        '<input type="text" id="carType" placeholder="商務車" class="form-control mb-2" value="' + response.carType + '">' +
+                                        '<input type="number" id="seat" placeholder="座椅數量" class="form-control mb-2"value="' + response.seat + '">' +
+                                        '<input type="number" id="baggage" placeholder="行李數量" class="form-control mb-2" max="50"value="' + response.baggage + '"><br>' +
+                                        '排檔:<input type="radio" id="automatic" name="transmission"  value="自排" class="ms-2 me-1">' +
+                                        '<label for="automatic">自排</label>' +
+                                        '<input type="radio" id="Manual" name="transmission" value="手排" class="ms-2 me-1">' +
+                                        '<label for="Manual">手排</label><br>' +
+                                        '燃料:<input type="radio" id="Gasoline" name="fuelType" value="汽油"  class="ms-2 me-1">' +
+                                        '<label for="Gasoline">汽油</label>' +
+                                        '<input type="radio" id="Electricity" name="fuelType" value="電力" class="ms-2 me-1">' +
+                                        '<label for="Electricity">電力</label>' +
+                                        '<input type="radio" id="Hybrid" name="fuelType" value="油電" class="ms-2 me-1">' +
+                                        '<label for="Hybrid">油電</label>' +
+                                        '<div><input type="file" id="image_uploads" name="image_uploads" accept=".jpg, .jpeg, .png" class="form-control mt-2">' +
+                                        '</div>'
+                                    ,
+                                    didOpen: function () {
+                                        // 这里是在弹出窗口打开时执行的 JavaScript 代码
+                                        var transmissionValue = response.transmission;
+                                        console.log(transmissionValue)
+                                        $('input[name="transmission"][value="' + transmissionValue + '"]').prop('checked', true);
+
+                                        // 设置燃料类型单选按钮的值
+                                        var fuelTypeValue = response.fuelType;
+                                        $('input[name="fuelType"][value="' + fuelTypeValue + '"]').prop('checked', true);
+
+
+                                        // 在按钮被点击时执行的 JavaScript 代码
+                                        // alert('Button clicked!');
+
+                                    },
+                                    showCancelButton: true,
+                                    confirmButtonText: '新增',
+                                    cancelButtonText: '取消',
+                                    // customClass: {
+                                    //     popup: 'custom-swal' // 使用自定义类调整弹出窗口的大小
+                                    // },             
+                                    preConfirm: function () {
+                                        return new Promise(function (resolve, reject) {
+
+                                            console.log(`獲取輸入數值`)
+                                            // 獲取表單輸入的值
+                                            var carmodelname = $('#carmodelname').val();
+                                            var carType = $('#carType').val();
+                                            var seatValue = $('#seat').val();
+                                            var baggageValue = $('#baggage').val();
+                                            var imageUploadInput = $('#image_uploads');
+                                            var imagePreview = $('#image_preview');
+                                            console.log(imageUploadInput)
+                                            // 檢查座椅數量和行李數量是否為數字
+                                            if (!carmodelname || !carType || !seatValue || !baggageValue) {
+                                                Swal.showValidationMessage('請填寫所有必填字段');
+                                                resolve();
+                                            } else if (!(/^\d+$/.test(seatValue))) {
+                                                Swal.showValidationMessage('座椅數量必須是數字');
+                                                resolve();
+                                            } else if (!(/^\d+$/.test(baggageValue))) {
+                                                Swal.showValidationMessage('行李數量必須是數字');
+                                                resolve();
+                                            } else if (!$('input[name="transmission"]:checked').val()) {
+                                                Swal.showValidationMessage('請選擇傳動類型');
+                                                resolve();
+                                            } else if (!$('input[name="fuelType"]:checked').val()) {
+                                                Swal.showValidationMessage('請選擇燃料類型');
+                                                resolve();
+                                            }
+                                            else {
+                                                // 預覽圖片
+                                                console.log(`tetete`)
+                                                var file = imageUploadInput[0].files[0];
+                                                // var reader = new FileReader();
+                                                var input = document.getElementById('image_uploads');
+                                                var preview = document.querySelector('.preview');
+                                                input.style.opacity = 0;
+                                                console.log(input)
+
+                                                // reader.onload = function (e) {
+                                                // 透明可以隱藏選擇檔案文字
+                                                // input.addEventListener('change', updateImageDisplay); function updateImageDisplay() {
+                                                //     while (preview.firstChild) {
+                                                //         preview.removeChild(preview.firstChild);
+                                                //         console.log(`移除`)
+                                                //     }
+
+                                                //     if (input.files.length === 0) {
+                                                //         var para = document.createElement('p');
+                                                //         para.textContent = '未選擇任何檔案';
+                                                //         para.style = "line-height: 300px;";
+                                                //         preview.appendChild(para);
+                                                //     }
+                                                //     else {
+                                                //         var para = document.createElement('p');
+                                                //         var image = document.createElement('img');
+                                                //         image.src = window.URL.createObjectURL(input.files[0]);
+                                                //         preview.appendChild(image);
+                                                //         preview.appendChild(para);
+                                                //     }
+                                                // }
+                                                // imagePreview.attr('src', e.target.result);
+                                                // };
+
+                                                // reader.readAsDataURL(file);
+
+                                                console.log(`tetete`)
+                                                console.log(response.carTypeID)
+                                                resolve({
+                                                    carTypeID: response.carTypeID,
+                                                    carmodelname: carmodelname,
+                                                    carType: carType,
+                                                    seat: seatValue,
+                                                    baggage: baggageValue,
+                                                    transmission: $('input[name="transmission"]:checked').val(),
+                                                    fuelType: $('input[name="fuelType"]:checked').val(),
+                                                    imageUploads: file
+                                                });
+                                            }
+                                        })
+                                    }
+                                }).then(function (result) {
+                                    if (result.isConfirmed) {
+                                        // 處理表單提交
+                                        console.log($('input[name="transmission"]:checked').val()); // 正確獲取車型的值
+                                        console.log(result);
+                                        console.log(result.value.baggage);
+                                        console.log(result[1]);
+                                        console.log(result.baggage);
+                                        console.log(result.transmission);
+                                        console.log(result.fuelType);
+                                        var formData = new FormData();
+                                        formData.append('carTypeID', result.value.carTypeID) //給id才能指定
+                                        formData.append('carmodelname', result.value.carmodelname); // 正確設置車型的值
+                                        formData.append('carType', result.value.carType);
+                                        formData.append('seat', result.value.seat);
+                                        formData.append('baggage', result.value.baggage);
+                                        formData.append('transmission', result.value.transmission);
+                                        formData.append('fuelType', result.value.fuelType);
+                                        if (result.value.imageUploads != null) {
+                                            console.log(`有圖片`)
+                                            console.log(result.value.imageUploads)
+                                            formData.append('multipartFile', result.value.imageUploads);
+                                        } else {
+                                            console.log(`沒有圖片`)
+                                        }
+                                        console.log(`資料準備送出`)
+                                        console.log(result.value.carTypeID);
+
+                                        $.ajax({
+                                            // url: '/updateData/' + response.carTypeID, // 后端处理页面的 URL
+                                            url: '/updateData', // 后端处理页面的 URL
+                                            type: 'put',
+                                            data: formData,
+                                            processData: false,
+                                            contentType: false,
+                                            success: function (response) {
+                                                Swal.fire('成功!', '您的資料已修改', 'success');
+                                                console.log(response)
+
+                                                console.log(`資料response`)
+                                                location.reload();
+                                            },
+                                            error: function (xhr, status, error) {
+                                                Swal.fire('錯誤!', '表單提交失敗，請重試.', 'error');
+                                            }
+                                        });
+                                    }
+                                });
+
+                                // }
+                                // },
+                                //     error: function (error) {
+                                //         console.error('error', error);
+                                //     }
+                                // })
+                                // 阻止默认的链接跳转行为
+                                // return false;
+                            }
+                        })
+                        return false;
+
+                    })
+
+
+
+
+
+
+
+
+                    $('.delete-button').click(function (event) {
+                        // 获取按钮的 href 属性值，即删除请求的 URL
+                        // event.preventDefault();
+                        // var deleteUrl = $('#delete' + object.carTypeID)
+                        var deleteUrl = $(this).attr('href');
+                        console.log(deleteUrl)
+                        // var rowId = deleteUrl.split('/').pop();
+                        // console.log(rowId)
+                        // $('#' + object.carTypeID + rowId).remove()             
+                        // 发送 AJAX 请求删除数据
+                        $.ajax({
+                            type: 'delete', // 使用 DELETE 方法
+                            url: deleteUrl,
+                            success: function (response2) {
+                                // 删除成功后的操作
+                                console.log('删除成功');
+                                // 刷新页面或执行其他操作
+                                // 刷新页面
+                                location.reload();
+                            },
+                            error: function (error) {
+                                // 处理错误
+                                console.error('删除失败', error);
+                            }
+                        });
+                        // 阻止默认的链接跳转行为
+                        return false;
+                    });
+                    // $('#myForm').click(function (event) {
+                    //     event.preventDefault(); // 防止默认的表单提交行为
+
+                    // var idd = $('#idSearch').val(); // 獲取 ID 輸入框的值
+                    $('#idSearchButton').click(function () {
+                        var id = parseInt(document.getElementById("idSearch").value);
+                        // var id = document.getElementById("idSearch").value;
+
+                        console.log(`執行用id按鈕11`)
+                        console.log(id)
+                        var jsondataByid = {
+                            "carTypeID": id
+                        }
+                        // JSON.stringify(jsondataByid)
+                        console.log(JSON.stringify(jsondataByid))
+                        searchCarByid(jsondataByid); // 執行搜尋函數
+                    });
+
+                    // 搜尋函數
+                    function searchCarByid(jsondataByid) {
+                        $.ajax({
+                            type: 'post',
+                            url: '/findCarModelById', // 修改為後端的路由地址
+                            data: JSON.stringify(jsondataByid),
+                            // data: jsondataByid,
+                            contentType: 'application/json',
+                            // data: id,
+                            success: function (response) {
+                                // 處理後端返回的搜索結果
+                                if (response == '') {
+                                    console.log(`空值`);
+                                } else if (response == null) {
+                                    console.log(`response==null`);
+                                } else if (response === null) {
+                                    console.log(`response===null`);
+                                }
+                                console.log(`response=` + response);
+                                console.log(response);
+                                console.log(response.carTypeID);
+                                console.log(response.carmodelname);
+
+
+                                var findbyid = '';
+                                findbyid += '<form class="  "><table class="text-center table align-middle table table-hover " ><thead><tr><th scope="col"  >ID</th><th scope="col">圖片</th><th scope="col">車款</th><th>級距</th><th>座椅</th><th>行李</th><th>排檔</th><th>燃料</th><th ">選項</th></tr></thead>'
+                                // $.each(response, function (index, object) {
+                                findbyid += "<tr class=''><th row='scope' style='text-align:center;'><input type='text' class=' border-0 form-control-plaintext ' id='floatingInputValue'   placeholder='ID' value=" + response.carTypeID + "   style='width:55px;text-align:center; margin: auto' readonly></th>"
+                                findbyid += " <td><img style='width:150px' class='img - thumbnail' src=" + response.base64 + "></td>"
+                                findbyid += "<td ><input type='text'  id='floatingInputValue' placeholder='ID' value=" + response.carmodelname + "   style='width:55px;text-align: center;  margin: auto' readonly  class=' border-0 form-control-plaintext'></td>"
+                                findbyid += "<td>" + response.carType + "</td><td>" + response.seat + "</td><td>" + response.baggage + "</td><td>" + response.transmission + "</td><td>" + response.fuelType + "</td><td><button type='button' class='btn btn-outline-primary'   id='modify-button'>編輯</button>"
+                                findbyid += "<button type='button' id='delete-button' class='btn btn-outline-secondary'  style=margin-left:30px > <a href='http://localhost:8081/delete/" + response.carTypeID + "' class='delete-button'>刪除</a></button></td></tr>"
+                                // })
+                                findbyid += "</table ></form>"
+                                // $('#test').html(test)
+                                // console.log(result)
+                                $('#findall').html(findbyid);
+                                console.log(`離開迴圈2`)
+                                // 更新頁面或其他操作
+                            },
+                            error: function (error) {
+                                console.log(error);
+                                console.log(`失敗`);
+                            }
+                        });
+                    }
+
+
+
+                    // 搜尋名稱的按鈕點擊事件
+                    $('#nameSearchButton').click(function () {
+                        var name = $('#nameInput').val(); // 獲取名稱輸入框的值
+                        // if (name != null) {
+                        console.log(`有值`)
+                        console.log(name)
+                        console.log(`執行name按鈕`)
+                        var jsondataByName = {
+                            "carmodelname": name
+                        }
+                        console.log(JSON.stringify(jsondataByName))
+                        searchCarByname(jsondataByName); // 執行搜索
+                        // } else {
+                        // console.log(jsondataByName + `不執行因為空直`)
+                        // }
+                    });
+                    function searchCarByname(jsondataByName) {
+                        $.ajax({
+                            type: 'post',
+                            url: '/findCarModelByName   ', // 修改為後端的路由地址
+                            data: JSON.stringify(jsondataByName),
+                            // data: name,
+                            contentType: 'application/json',
+                            success: function (response) {
+                                // 處理後端返回的搜索結果
+                                console.log(response);
+                                console.log(`成功`);
+                                // 更新頁面或其他操作
+                            },
+                            error: function (error) {
+                                console.log(error);
+                                console.log(`失敗`);
+                            }
+                        });
+                    }
+
+                    // function searchCarByname(jsondataByName) {
+                    //     $.ajax({
+                    //         type: 'post',
+                    //         url: '/findCarModelByName   ', // 修改為後端的路由地址
+                    //         data: JSON.stringify(jsondataByName),
+                    //         // data: name,
+                    //         contentType: 'application/json',
+                    //         success: function (response) {
+                    //             // 處理後端返回的搜索結果
+                    //             console.log(response);
+                    //             console.log(`成功`);
+                    //             // 更新頁面或其他操作
+                    //         },
+                    //         error: function (error) {
+                    //             console.log(error);
+                    //             console.log(`失敗`);
+                    //         }
+                    //     });
+                    // }
+                    // })
+
+                    // })
+                    // <input type="text"     class="form-control-plaintext" id="staticEmail" >
+                    $('#datainsert').click(function () {
+                        // 调用SweetAlert2
+                        Swal.fire({
+                            title: "新增資料",
+                            icon: "question",
+                            html: '<input type="text" id="carmodelname" placeholder="車型" class="form-control mb-2">' +
+                                '<input type="text" id="carType" placeholder="商務車" class="form-control mb-2">' +
+                                '<input type="number" id="seat" placeholder="座椅數量" class="form-control mb-2">' +
+                                '<input type="number" id="baggage" placeholder="行李數量" class="form-control mb-2" max="50"><br>' +
+                                '排檔:<input type="radio" id="automatic" name="transmission" checked value="自排" class="ms-2 me-1">' +
+                                '<label for="automatic">自排</label>' +
+                                '<input type="radio" id="Manual" name="transmission" value="手排" class="ms-2 me-1">' +
+                                '<label for="Manual">手排</label><br>' +
+                                '燃料:<input type="radio" id="Gasoline" name="fuelType" value="汽油" checked class="ms-2 me-1">' +
+                                '<label for="Gasoline">汽油</label>' +
+                                '<input type="radio" id="Electricity" name="fuelType" value="電力" class="ms-2 me-1">' +
+                                '<label for="Electricity">電力</label>' +
+                                '<input type="radio" id="Hybrid" name="fuelType" value="油電" class="ms-2 me-1">' +
+                                '<label for="Hybrid">油電</label>' +
+                                '<div><input type="file" id="image_uploads" name="image_uploads" accept=".jpg, .jpeg, .png" class="form-control mt-2">' +
+                                '</div>'
+                            ,
+                            showCancelButton: true,
+                            confirmButtonText: '新增',
+                            cancelButtonText: '取消',
+                            // customClass: {
+                            //     popup: 'custom-swal' // 使用自定义类调整弹出窗口的大小
+                            // },             
+                            preConfirm: function () {
+                                return new Promise(function (resolve, reject) {
+
+                                    // 獲取表單輸入的值
+                                    var carmodelname = $('#carmodelname').val();
+                                    var carType = $('#carType').val();
+                                    var seatValue = $('#seat').val();
+                                    var baggageValue = $('#baggage').val();
+                                    var imageUploadInput = $('#image_uploads');
+                                    var imagePreview = $('#image_preview');
+
+                                    // 檢查座椅數量和行李數量是否為數字
+                                    if (!carmodelname || !carType || !seatValue || !baggageValue) {
+                                        Swal.showValidationMessage('請填寫所有必填字段');
+                                        resolve();
+                                    } else if (!(/^\d+$/.test(seatValue))) {
+                                        Swal.showValidationMessage('座椅數量必須是數字');
+                                        resolve();
+                                    } else if (!(/^\d+$/.test(baggageValue))) {
+                                        Swal.showValidationMessage('行李數量必須是數字');
+                                        resolve();
+                                    } else if (!$('input[name="transmission"]:checked').val()) {
+                                        Swal.showValidationMessage('請選擇傳動類型');
+                                        resolve();
+                                    } else if (!$('input[name="fuelType"]:checked').val()) {
+                                        Swal.showValidationMessage('請選擇燃料類型');
+                                        resolve();
+                                    }
+                                    else {
+                                        // 預覽圖片
+                                        console.log(`tetete`)
+                                        var file = imageUploadInput[0].files[0];
+                                        // var reader = new FileReader();
+                                        var input = document.getElementById('image_uploads');
+                                        var preview = document.querySelector('.preview');
+                                        input.style.opacity = 0;
+                                        console.log(input)
+
+                                        // reader.onload = function (e) {
+                                        // 透明可以隱藏選擇檔案文字
+                                        input.addEventListener('change', updateImageDisplay); function updateImageDisplay() {
+                                            while (preview.firstChild) {
+                                                preview.removeChild(preview.firstChild);
+                                                console.log(`移除`)
+                                            }
+
+                                            if (input.files.length === 0) {
+                                                var para = document.createElement('p');
+                                                para.textContent = '未選擇任何檔案';
+                                                para.style = "line-height: 300px;";
+                                                preview.appendChild(para);
+                                            }
+                                            else {
+                                                var para = document.createElement('p');
+                                                var image = document.createElement('img');
+                                                image.src = window.URL.createObjectURL(input.files[0]);
+                                                preview.appendChild(image);
+                                                preview.appendChild(para);
+                                            }
+                                        }
+                                        // imagePreview.attr('src', e.target.result);
+                                        // };
+
+                                        // reader.readAsDataURL(file);
+
+                                        console.log(`tetete`)
+                                        resolve({
+                                            carmodelname: carmodelname,
+                                            carType: carType,
+                                            seat: seatValue,
+                                            baggage: baggageValue,
+                                            transmission: $('input[name="transmission"]:checked').val(),
+                                            fuelType: $('input[name="fuelType"]:checked').val(),
+                                            imageUploads: file
+                                        });
+                                    }
+                                })
+                            }
+                        }).then(function (result) {
+                            if (result.isConfirmed) {
+                                // 處理表單提交
+                                console.log($('input[name="transmission"]:checked').val()); // 正確獲取車型的值
+                                console.log(result);
+                                console.log(result.value.baggage);
+                                console.log(result[1]);
+                                console.log(result.baggage);
+                                console.log(result.transmission);
+                                console.log(result.fuelType);
+                                var formData = new FormData();
+                                formData.append('carmodelname', result.value.carmodelname); // 正確設置車型的值
+                                formData.append('carType', result.value.carType);
+                                formData.append('seat', result.value.seat);
+                                formData.append('baggage', result.value.baggage);
+                                formData.append('transmission', result.value.transmission);
+                                formData.append('fuelType', result.value.fuelType);
+                                if (result.value.imageUploads != null) {
+                                    console.log(`有圖片`)
+                                    formData.append('multipartFile', result.value.imageUploads);
+                                } else {
+                                    console.log(`沒有圖片`)
+                                }
+                                console.log(`資料準備送出`)
+
+                                $.ajax({
+                                    url: '/insert.data', // 后端处理页面的 URL
+                                    type: 'POST',
+                                    data: formData,
+                                    processData: false,
+                                    contentType: false,
+                                    success: function (response) {
+                                        Swal.fire('成功!', '您的車型已新增', 'success');
+                                        location.reload();
+                                    },
+                                    error: function (xhr, status, error) {
+                                        Swal.fire('錯誤!', '表單提交 失敗，請重試.', 'error');
+                                    }
+                                });
+                            }
+                        });
+
+                    });
+
+
+                    // $.ajax({
+                    //     type: 'post',
+                    //     url: '/findCarModelByName   ', // 修改為後端的路由地址
+                    //     data: JSON.stringify(jsondataByName),
+                    //     // data: name,
+                    //     contentType: 'application/json',
+                    //     success: function (response) {
+                    //         // 處理後端返回的搜索結果
+                    //         console.log(response);
+                    //         console.log(`成功`);
+                    //         // 更新頁面或其他操作
+                    //     },
+                    //     error: function (error) {
+                    //         console.log(error);
+                    //         console.log(`失敗`);
+                    //     }
+                    // });
+                    //                 async function eee() {
+                    //                     const ipAPI = "//api.ipify.org?format=json";
+                    //                     const response = await fetch(ipAPI);
+                    //                     const data = await response.json();
+                    //                     const inputValue = data.ip;
+                    //                     const {
+                    //                         value: ipAddress
+                    //                     } = await Swal.fire({
+                    //                         title: "Enter your IP address",
+                    //                         input: "text",
+                    //                         html: `
+                    //                         <div class="mb-3">
+                    //   <label for="exampleFormControlInput1" class="form-label">Email address</label>
+                    //   <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
+                    // </div>
+                    //   `,
+                    //                         // inputLabel: "Your IP address",
+                    //                         inputValue,
+                    //                         showCancelButton: true,
+                    //                         inputValidator: (value) => {
+                    //                             if (!value) {
+                    //                                 return "You need to write something!";
+                    //                             }
+                    //                         }
+                    //                     });
+                    //                     // if (ipAddress) {
+                    //                     //     Swal.fire(`Your IP address is ${ipAddress}`);
+                    //                     // }
+                    //                 }
+                    //                 eee()
+
+                    // Swal.fire({
+                    //     icon: 'success',
+                    //     title: '新增資料',
+                    //     text: '您已成功添加数据！',
+                    //     // showConfirmButton: false, // 禁用确认按钮
+                    //     // timer: 1500 // 设置自动关闭时间
+                    //     }
+                }
+            });
+
+        })
+
+
+
+    </script>
+</head>
+
+<body>
+    <iframe src="/components/adminSidebar.jsp" width="100%" height="600"></iframe>
+    <nav class="navbar navbar-light bg-light  fixed-top ">
+        <div class="container-fluid ">
+            <a class="navbar-brand">租車後台管理系統</a>
+            <form class="d-flex " id="myForm">
+                <!-- <button type="button" class="btn btn-primary btn-lg" style="width: 150px; height: 50px;">新增資料</button> -->
+                <!-- <button class="btn btn-outline-success" type="submit">button</button> -->
+                <button class="btn btn-outline-success col-sm-2 " type="button" id="datainsert">新增資料</button>
+                <label for="staticEmail" class="col-sm-2 col-form-label"
+                    style="margin-left:25px ;width:50px;">ID:</label>
+                <input id="idSearch" class="form-control me-2 " type="text" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="button" id="idSearchButton">Search</button>
+                <label for="staticEmail" class="col-sm-2 col-form-label" style="margin-left:25px ;width:50px;">
+                    name:</label>
+                <input id="nameInput" class="form-control me-2 " type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="button" id="nameSearchButton">Search</button>
+            </form>
+        </div>
+    </nav>
+    <!-- <div class="scroll-to-top">
+        <a href="#" id="scrollToTopButton">
+            <img src="scroll-to-top-icon.png" alt="Scroll to Top">
+        </a>
+    </div> -->
+    <!-- <div id="test"></div> -->
+    <div style="margin-top: 80px;"></div>
+    <div id="findall">
+    </div>
+    <!-- <div id="app">{{test}}</div> -->
+    <!-- <div class="d-grid gap-2 col-6 mx-auto btn-lg">
+        <button class="btn btn-primary " type="button">Button</button>
+        <button class="btn btn-primary" type="button">Button</button>
+        <button type="button" class="btn btn-outline-primary">Primary</button>
+        <button type="button" class="btn btn-outline-secondary">Secondary</button>
+    </div> -->
+    <button onclick="showAlert()">Click Me</button>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+    <!-- <input type="file" id="image_uploads" name="image_uploads" accept=".jpg, .jpeg, .png"
+        style="position:absolute;height:320px;width:550px;"> -->
+    <!-- <img id="preview_image" src="" alt="Preview" style="display:none;height:320px;width:550px;"> -->
+    <!-- <script src="../resources/dist/sweetalert2.min.js"></script> -->
+    <script>
+        const showAlert = () => {
+            Swal.fire({
+                icon: 'success',
+                title: 'Hi',
+                text: 'Thanks for coming!',
+            })
+        }
+        // document.getElementById()
+        // const { createApp, ref } = Vue
+        // createApp({
+        //     setup() {
+        //         const test = ref('Hello vue!')
+        //         return {
+        //             test
+        //         }
+        //     }
+        // }).mount('#app')
+        // document.addEventListener("DOMContentLoaded", function () {
+        //     var scrollToTopButton = document.getElementById('scrollToTopButton');
+        //     // Add click event listener to scroll to top button
+        //     scrollToTopButton.addEventListener('click', function (e) {
+        //         e.preventDefault();
+        //         window.scrollTo({
+        //             top: 0,
+        //             behavior: 'smooth' // Smooth scrolling animation
+        //         });
+        //     });
+        // });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>

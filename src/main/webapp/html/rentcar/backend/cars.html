@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>SB Admin 2 - Buttons</title>
+
+    <!-- Custom fonts for this template-->
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.3/dist/sweetalert2.all.min.js"></script>
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+
+    <style>
+        .dropdown {
+            list-style-type: none;
+            /* 隐藏列表项的小黑点 */
+        }
+    </style>
+        <script>
+            if (window.self !== window.top) {
+                window.top.location.href = window.self.location.href;
+            }
+        </script>
+    <style type="text/css">
+        .flex {
+            display: flex;
+        }
+    </style>
+    <!-- 
+    <style>
+        .custom-swal {
+            width: 6000px !important;
+            /* 设置宽度为 600px，根据需要调整 */
+            max-width: 80%;
+            /* 设置最大宽度，根据需要调整 */
+        }
+    </style> -->
+    <script>
+        $(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            // 从路径参数中获取车型ID
+            const carmodelid = urlParams.get('id');
+            console.log(carmodelid)
+            const rentinfoId = urlParams.get('rentinfoId');
+            // const assignationButton = document.querySelector('.assignation-button');
+            // if (rentinfoId && rentinfoId !== '') {
+            //     // 如果 rentinfoId 存在且不为空，则启用指定按钮
+            //     assignationButton.removeAttribute('disabled');
+            // } else {
+            //     // 否则禁用指定按钮
+            //     assignationButton.setAttribute('disabled', 'disabled');
+            // }
+            // if (rentinfoId) {
+            //     assignationButton.disabled = false; // 启用按钮
+            // } else {
+            //     assignationButton.disabled = true; // 禁用按钮
+            // }
+
+            // 发送请求到后端，获取对应车型的数据
+            $.ajax({
+                type: 'get',
+                url: '/cars/cars/' + carmodelid,
+                success: function (response) {
+                    // 在成功获取数据后，处理数据并展示在页面上
+                    console.log(response);
+                    // TODO: 在页面中展示车型数据
+                    console.log(response)
+                    var result = '';
+                    // console.log(response.length)
+                    // form-floating
+                    result += `<form class="findAll  "><table class="text-center  table   table-hover " ><thead  class="align-middle"><tr><th scope="col"  >CARID</th><th scope="col">車款</th><th scope="col">車牌號碼</th><th>狀態</th><th>選項</th><th>細節</th></tr></thead>`
+                    $.each(response, function (index, object) {
+                        
+                        result += "<tr class='" + object.carId + "row' id='" + object.carId + "'><th row='scope' style='text-align:center;'><input type='text' class=' border-0 form-control-plaintext ' id='floatingInputValue'   placeholder='ID' value=" + object.carId + "   style='width:55px;text-align:center; margin: auto' readonly></th>"
+                        result += " <td>" + object.carModel.carmodelname + "</td>"
+                        result += "<td ><input type='text'  id='floatingInputValue' placeholder='ID' value=" + object.licensePlate + "   style='width:75px;text-align: center;  margin: auto' readonly  class=' border-0 form-control-plaintext'></td>"
+                        result += "<td>" + object.status + "</td>"
+                        result += `<td><a href="http://localhost:8080/cars/update/` + object.carId + `" class="update-button btn btn-primary " tabindex="-1" role="button" aria-disabled="true"  id="update` + object.carId + `">編輯</a>`
+                        result += `<a href="http://localhost:8080/cars/delete/` + object.carId + `" class="delete-button btn btn-primary " tabindex="-1" role="button" aria-disabled="true"  id="delete` + object.carId + `" style='margin-left:35px;'>刪除</a></td>`
+                        result += `<td><a href="http://localhost:8080/rentinfo/update?carId=` + object.carId + `&rentinfoId=` + rentinfoId + `" class="assignation-button btn btn-primary " tabindex="-1" role="button" aria-disabled="true"  id="delete` + object.carTypeID + `" style=''>指定</a></td>`
+                        // result += `<td><a href="http://localhost:8081/delete/` + object.carTypeID + `" class="delete-button btn btn-primary " tabindex="-1" role="button" aria-disabled="true"  id="delete` + object.carTypeID + `">刪除</a></td>`
+
+                        // result += `<td><a href="http://localhost:8081/update/` + object.carTypeID + `" class="update-button btn btn-primary " tabindex="-1" role="button" aria-disabled="true"  id="update` + object.carTypeID + `">編輯</a></td>`
+                        // result += `<td><a href="http://localhost:8081/update/` + object.carTypeID + `" class="update-button btn btn-primary " tabindex="-1" role="button" aria-disabled="true"  id="update` + object.carTypeID + `">內容</a></td>`
+                        result += `</tr>`
+                        // console.log(`迴圈中`)
+                     
+                    })
+                    result += "</table ></form>"
+                    // console.log(response.carTypeID)
+                    $('#findall').html(result);
+                    console.log(`離開迴圈`)
+                 
+
+
+
+
+
+                    //指定按鈕  
+                    $(document).on('click', '.assignation-button', function () {
+                        var assignation = $(this).attr('href');
+                        console.log(assignation)
+                        Swal.fire({
+                            title: '確定指派該車輛?',
+                            text: "確認後將執行此操作！",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: '確定',
+                            cancelButtonText: '取消'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                console.log(`is confirmed`)
+                                $.ajax({
+                                    type: 'put',
+                                    url: assignation,
+                                    success: function (response) {
+                                        console.log(`success`)
+                                        // if (response === null) {
+                                        //     // 如果后端返回了 null 值，显示 SweetAlert2 提示框
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: '成功',
+                                            text: '分配成功。',
+                                            showCancelButton: true,
+                                            confirmButtonColor: '#3085d6',
+                                            cancelButtonColor: '#d33',
+                                            confirmButtonText: '確認',
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                location.reload(); // 重新加载页面
+                                            }
+                                        });
+                                 
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error('Error:', error); // 请求失败时的处理
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: '錯誤',
+                                            text: '車輛狀態為已出租。',
+
+                                        });
+                                    }
+                                })
+                            }
+                        })
+                       
+                        return false
+                    })
+
+
+
+
+
+
+
+
+
+
+
+                    $('.update-button').click(function () {
+                        var updateUrl = $(this).attr('href');
+                        console.log(updateUrl)
+
+                        $.ajax({
+                            type: 'put',
+                            url: updateUrl,
+                            // data: f,
+                            success: function (response) {
+
+                               
+
+
+
+                                console.log(response);
+                                console.log(response.carmodelid);
+
+                                // if (response == '') {
+                                console.log(`無此筆資料`)
+                                // } else {
+                                console.log(`有此筆資料`)
+                                Swal.fire({
+
+                                    title: "更新資料",
+                                    icon: "warning",
+                                    html: '<input type="text" id="carmodelname" placeholder="車牌號碼" class="form-control mb-2" value="' + response.licensePlate + '">' +
+                                        // '<input type="text" id="carType" placeholder="金額" class="form-control mb-2" value="' + response.carCost + '">' +
+                                        // '<input type="number" id="seat" placeholder="狀態" class="form-control mb-2"value="' + response.seat + '">' +
+                                        // '<input type="number" id="baggage" placeholder="行李數量" class="form-control mb-2" max="50"value="' + response.baggage + '"><br>' +
+                                        '狀態:<input type="radio" id="automatic" name="transmission"  value="可用的" class="ms-2 me-1">' +
+                                        '<label for="automatic">可用的</label>' +
+                                        '<input type="radio" id="Manual" name="transmission" value="已出租" class="ms-2 me-1">' +
+                                        '<label for="Manual">已出租</label><br>'
+                                  
+                                    ,
+                                    didOpen: function () {
+                                        // 这里是在弹出窗口打开时执行的 JavaScript 代码
+                                        var status = response.status;
+                                        // console.log(transmissionValue)
+                                        $('input[name="transmission"][value="' + status + '"]').prop('checked', true);
+
+                                       
+
+                                    },
+                                    showCancelButton: true,
+                                    confirmButtonText: '修改',
+                                    cancelButtonText: '取消',
+                                    // customClass: {
+                                    //     popup: 'custom-swal' // 使用自定义类调整弹出窗口的大小
+                                    // },             
+                                    preConfirm: function () {
+                                        return new Promise(function (resolve, reject) {
+
+                                            console.log(`獲取輸入數值`)
+                                            // 獲取表單輸入的值
+                                            var carmodelname = $('#carmodelname').val();//車牌號碼
+                                            var carType = $('#carType').val();//金額
+                                            var seatValue = $('#seat').val();//
+                                            var baggageValue = $('#baggage').val();//
+                                            var imageUploadInput = $('#image_uploads');//
+                                            var imagePreview = $('#image_preview');//
+                                            console.log(imageUploadInput)
+                                            // 檢查座椅數量和行李數量是否為數字
+                                            if (!carmodelname ) {
+                                                Swal.showValidationMessage('請填寫所有必填字段');
+                                                resolve();
+                                            }
+                                            else if (!$('input[name="transmission"]:checked').val()) {
+                                                Swal.showValidationMessage('請選擇傳動類型');
+                                                resolve();
+                                            }
+
+                                            else {
+                                                // 預覽圖片
+                                                console.log(`tetete`)
+                                              
+
+                                                console.log(`tetete`)
+                                                console.log(response.carmodelid)
+                                                resolve({
+                                                    // carTypeID: response.carTypeID,
+                                                    carId: response.carId,
+                                                    licensePlate: carmodelname,
+                                                    carCost: carType,
+                                                    // seat: seatValue,
+                                                    // baggage: baggageValue,
+                                                    status: $('input[name="transmission"]:checked').val(),
+                                                    // fuelType: $('input[name="fuelType"]:checked').val(),
+                                                    // imageUploads: file,
+
+                                                });
+                                            }
+                                        })
+                                    }
+                                }).then(function (result) {
+                                    if (result.isConfirmed) {
+                                        // 處理表單提交
+                                        console.log($('input[name="transmission"]:checked').val()); // 正確獲取狀態的值
+                                        console.log(result);
+                                        console.log(response.carModel.carmodelid);
+                                        console.log(result.fuelType);
+                                        var formData = new FormData();
+                                        formData.append('carTypeID', response.carModel.carmodelid)
+                                        formData.append('carId', response.carId)
+                                        // formData.append('carTypeID', result.value.carTypeID)
+                                        formData.append('licensePlate', result.value.carmodelname); // 正確設置車牌號碼的值
+                                        formData.append('carCost', result.value.carType);//金額
+
+                                        formData.append('status', result.value.transmission);//狀態
+                                        console.log(formData)
+                                        // formData.append('fuelType', result.value.fuelType);
+
+                                        console.log(`資料準備送出`)
+                                        console.log(result.value.carmodelid);
+                                        console.log(response.carId);
+                                        console.log(response.carModel.carmodelid);
+                                        var json = {
+                                            carId: response.carId,
+                                            licensePlate: result.value.licensePlate,
+                                            status: result.value.status,
+                                            carCost: result.value.carCost,
+                                            carModel: {
+                                                carmodelid: response.carModel.carmodelid, // Assuming carTypeId is the ID of the car model
+                                                carmodelname: response.carModel.carmodelname,
+                                                carType: response.carModel.carType,
+                                                seat: response.carModel.seat,
+                                                baggage: response.carModel.baggage,
+                                                transmission: response.carModel.transmission,
+                                                fuelType: response.carModel.fuelType,
+                                                // Add other properties as needed
+                                            }
+                                        }
+                                        console.log(JSON.stringify(json));
+                                        $.ajax({
+                                            // url: '/updateData/' + response.carTypeID, // 后端处理页面的 URL
+                                            url: '/cars/updateData', // 后端处理页面的 URL
+                                            type: 'put',
+                                            // data: formData,
+                                            // processData: false,
+                                            // contentType: false,
+                                            contentType: 'application/json',
+                                            data: JSON.stringify(json),
+                                            success: function (response) {
+                                                
+
+                                                Swal.fire({
+                                                    title: '成功!',
+                                                    text: '您的資料已修改',
+                                                    icon: 'success',
+                                                    showCancelButton: true,
+                                                    confirmButtonColor: '#3085d6',
+                                                    cancelButtonColor: '#d33',
+                                                    confirmButtonText: '確認',
+                                                    // cancelButtonText: '留在当前页面'
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        location.reload(); // 重新加载页面
+                                                    }
+                                                });
+                                            },
+                                            error: function (xhr, status, error) {
+                                                Swal.fire('錯誤!', '表單提交失敗，請重試.', 'error');
+                                            }
+                                        })
+                                    }
+                                });
+
+                              
+                            }
+                        })
+                        return false;
+
+                    })
+
+                    ///update
+
+
+
+
+
+
+                    $('.delete-button').click(function (event) {
+                        // 获取按钮的 href 属性值，即删除请求的 URL
+                        // event.preventDefault();
+                        // var deleteUrl = $('#delete' + object.carTypeID)
+                        var deleteUrl = $(this).attr('href');
+                        console.log(deleteUrl)
+                        // var rowId = deleteUrl.split('/').pop();
+                        // console.log(rowId)
+                        // $('#' + object.carTypeID + rowId).remove()             
+                        // 发送 AJAX 请求删除数据
+                        $.ajax({
+                            type: 'delete', // 使用 DELETE 方法
+                            url: deleteUrl,
+                            success: function (response2) {
+                                // 删除成功后的操作
+                                console.log('删除成功');
+                                // 刷新页面或执行其他操作
+                                // 刷新页面
+                                location.reload();
+                            },
+                            error: function (error) {
+                                // 处理错误
+                                console.error('删除失败', error);
+                            }
+                        });
+                        // 阻止默认的链接跳转行为
+                        return false;
+                    });
+                  
+                   
+                    $('#datainsert').click(function () {
+                        // 调用SweetAlert2
+                        Swal.fire({
+                            title: "新增資料",
+                            icon: "warning",
+                            html: '<input type="text" id="carmodelname" placeholder="車牌號碼" class="form-control mb-2" >' +
+                                // '<input type="text" id="carType" placeholder="金額" class="form-control mb-2">' +
+                                // '<input type="number" id="seat" placeholder="狀態" class="form-control mb-2"value="' + response.seat + '">' +
+                                // '<input type="number" id="baggage" placeholder="行李數量" class="form-control mb-2" max="50"value="' + response.baggage + '"><br>' +
+                                '狀態:<input type="radio" id="automatic" name="transmission"  value="可用的" class="ms-2 me-1" checked>' +
+                                '<label for="automatic">可用的</label>' +
+                                '<input type="radio" id="Manual" name="transmission" value="已出租" class="ms-2 me-1">' +
+                                '<label for="Manual">已出租</label><br>'
+                           
+                            ,
+                            showCancelButton: true,
+                            confirmButtonText: '新增',
+                            cancelButtonText: '取消',
+                            // customClass: {
+                            //     popup: 'custom-swal' // 使用自定义类调整弹出窗口的大小
+                            // },             
+                            preConfirm: function () {
+                                return new Promise(function (resolve, reject) {
+
+                                    // 獲取表單輸入的值
+                                    var carmodelname = $('#carmodelname').val();//車牌
+                                    var carType = $('#carType').val();//金額
+                                    // var seatValue = $('#seat').val();
+                                    // var baggageValue = $('#baggage').val();
+                                    // var imageUploadInput = $('#image_uploads');
+                                    // var imagePreview = $('#image_preview');
+
+                                    // 檢查座椅數量和行李數量是否為數字
+                                    if (!carmodelname ) {
+                                        Swal.showValidationMessage('請填寫所有必填字段');
+                                        resolve();
+                                    }
+
+                                    else if (!$('input[name="transmission"]:checked').val()) {
+                                        Swal.showValidationMessage('請選擇狀態');
+                                        resolve();
+                                    }
+
+                                    else {
+                                        // 預覽圖片
+                                        console.log(`tetete`)
+
+                                        // console.log(response[0].carModel.carTypeID)
+                                    }
+                                    console.log(`tetete`)
+                                    resolve({
+                                        carmodelname: carmodelname,//車牌號碼\
+                                        carType: carType,//金額
+                                        // seat: seatValue,
+                                        // baggage: baggageValue,
+                                        transmission: $('input[name="transmission"]:checked').val(),
+                                        // fuelType: $('input[name="fuelType"]:checked').val(),
+                                        // imageUploads: file
+                                    });
+                                })
+                            }
+
+                        }).then(function (result) {
+                            if (result.isConfirmed) {
+                                var json = {
+                                    // carId: response.carId, 不用給Id
+                                    licensePlate: result.value.carmodelname,
+                                    status: result.value.transmission,
+                                    carCost: result.value.carType,
+                                    carModel: {
+                                        carmodelid: carmodelid, // Assuming carTypeId is the ID of the car model
+                                        // carmodelname: response[0].carModel.carmodelname,
+                                        // carType: response[0].carModel.carType,
+                                        // seat: response[0].carModel.seat,
+                                        // baggage: response[0].carModel.baggage,
+                                        // transmission: response[0].carModel.transmission,
+                                        // fuelType: response[0].carModel.fuelType,
+                                        // Add other properties as needed
+                                    }
+                                }
+                                console.log(JSON.stringify(json));
+                                // 處理表單提交
+                                console.log($('input[name="transmission"]:checked').val()); // 正確獲取車型的值
+                                console.log(result);
+
+
+
+                                console.log(result.transmission);
+
+                                var formData = new FormData();
+                                formData.append('carmodelname', result.value.carmodelname); // 正確設置車型的值
+                                formData.append('carType', result.value.carType);
+                                // formData.append('seat', result.value.seat);
+                                // formData.append('baggage', result.value.baggage);
+                                formData.append('transmission', result.value.transmission);
+                                // formData.append('fuelType', result.value.fuelType);
+                                // if (result.value.imageUploads != null) {
+                                //     console.log(`有圖片`)
+                                //     formData.append('multipartFile', result.value.imageUploads);
+                                // } else {
+                                //     console.log(`沒有圖片`)
+                                // }
+                                console.log(`資料準備送出`)
+
+                                $.ajax({
+                                    url: '/cars/insert.data', // 后端处理页面的 URL
+                                    type: 'POST',
+                                    // data: formData,
+                                    data: JSON.stringify(json),
+                                    contentType: 'application/json',
+                                    // processData: false,
+                                    // contentType: false,
+                                    success: function (response) {
+                                        // Swal.fire('成功!', '您的車型已新增', 'success');
+                                        // console.log(`response  insert`)
+                                        // location.reload();
+                                        Swal.fire({
+                                                    title: '成功!',
+                                                    text: '您的資料已新增',
+                                                    icon: 'success',
+                                                    showCancelButton: true,
+                                                    confirmButtonColor: '#3085d6',
+                                                    cancelButtonColor: '#d33',
+                                                    confirmButtonText: '確認',
+                                                    // cancelButtonText: '留在当前页面'
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        location.reload(); // 重新加载页面
+                                                    }
+                                                });
+                                    },
+                                    error: function (xhr, status, error) {
+                                        Swal.fire('錯誤!', '表單提交 失敗，請重試.', 'error');
+                                    }
+                                });
+                            }
+                        });
+
+                    });
+
+
+                  
+                }
+            });
+
+        })
+
+
+
+    </script>
+</head>
+
+<body id="page-top">
+
+    <div class="flex" style="height: 100%; width: 100%">
+
+        <iframe src="/components/adminSidebar.jsp" width="18%" height="1000px"></iframe>
+        <div style="margin: 30px; width: 100%;">
+
+            <!-- Page Wrapper -->
+            <div id="wrapper">
+
+
+
+                <!-- Content Wrapper -->
+                <div id="content-wrapper" class="d-flex flex-column">
+
+                    <!-- Main Content -->
+                    <div id="content">
+
+                        <!-- Topbar -->
+                        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                            <!-- Sidebar Toggle (Topbar) -->
+                            <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                                <i class="fa fa-bars"></i>
+                            </button>
+
+                            <!-- Topbar Search -->
+                            <form
+                                class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                                <div class="input-group">
+                                    <input type="text" class="form-control bg-light border-0 small"
+                                        placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-primary" type="button">
+                                            <i class="fas fa-search fa-sm"></i>
+                                        </button>
+                                    </div>
+                                    <div class="input-group">
+                                        <button class="btn btn-outline-success " type="button" id="datainsert">新增資料</button>
+                                    </div>
+
+                                   
+                                </div>
+                            </form>
+
+                            <!-- Topbar Navbar -->
+                            <ul class="navbar-nav ml-auto">
+
+                                <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                                <li class="nav-item dropdown no-arrow d-sm-none">
+                                    <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-search fa-fw"></i>
+                                    </a>
+                                    <!-- Dropdown - Messages -->
+                                    <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
+                                        aria-labelledby="searchDropdown">
+                                        <form class="form-inline mr-auto w-100 navbar-search">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control bg-light border-0 small"
+                                                    placeholder="Search for..." aria-label="Search"
+                                                    aria-describedby="basic-addon2">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-primary" type="button">
+                                                        <i class="fas fa-search fa-sm"></i>
+                                                    </button>
+                                                    
+                                                </div>
+                                                
+                                                
+                                                
+                                            </div>
+                                        </form>
+                                    </div>
+                                </li>
+
+                                <!-- Nav Item - Alerts -->
+                                <li class="nav-item dropdown no-arrow mx-1">
+                                    <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-bell fa-fw"></i>
+                                        <!-- Counter - Alerts -->
+                                        <!-- <span class="badge badge-danger badge-counter">3+</span> -->
+                                    </a>
+                                    <!-- Dropdown - Alerts -->
+                                    <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                        aria-labelledby="alertsDropdown">
+                                        <h6 class="dropdown-header">
+                                            Alerts Center
+                                        </h6>
+                                        <a class="dropdown-item d-flex align-items-center" href="#">
+                                            <div class="mr-3">
+                                                <div class="icon-circle bg-primary">
+                                                    <i class="fas fa-file-alt text-white"></i>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="small text-gray-500">December 12, 2019</div>
+                                                <span class="font-weight-bold">A new monthly report is ready to
+                                                    download!</span>
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#">
+                                            <div class="mr-3">
+                                                <div class="icon-circle bg-success">
+                                                    <i class="fas fa-donate text-white"></i>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="small text-gray-500">December 7, 2019</div>
+                                                $290.29 has been deposited into your account!
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#">
+                                            <div class="mr-3">
+                                                <div class="icon-circle bg-warning">
+                                                    <i class="fas fa-exclamation-triangle text-white"></i>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="small text-gray-500">December 2, 2019</div>
+                                                Spending Alert: We've noticed unusually high spending for your account.
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item text-center small text-gray-500" href="#">Show All
+                                            Alerts</a>
+                                    </div>
+                                </li>
+
+                                <!-- Nav Item - Messages -->
+                                <li class="nav-item dropdown no-arrow mx-1">
+                                    <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-envelope fa-fw"></i>
+                                        <!-- Counter - Messages -->
+                                        <!-- <span class="badge badge-danger badge-counter">7</span> -->
+                                    </a>
+                                    <!-- Dropdown - Messages -->
+                                    <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                        aria-labelledby="messagesDropdown">
+                                        <h6 class="dropdown-header">
+                                            Message Center
+                                        </h6>
+                                        <a class="dropdown-item d-flex align-items-center" href="#">
+                                            <div class="dropdown-list-image mr-3">
+                                                <img class="rounded-circle" src="img/undraw_profile_1.svg" alt="...">
+                                                <div class="status-indicator bg-success"></div>
+                                            </div>
+                                            <div class="font-weight-bold">
+                                                <div class="text-truncate">Hi there! I am wondering if you can help me
+                                                    with a
+                                                    problem I've been having.</div>
+                                                <div class="small text-gray-500">Emily Fowler · 58m</div>
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#">
+                                            <div class="dropdown-list-image mr-3">
+                                                <img class="rounded-circle" src="img/undraw_profile_2.svg" alt="...">
+                                                <div class="status-indicator"></div>
+                                            </div>
+                                            <div>
+                                                <div class="text-truncate">I have the photos that you ordered last
+                                                    month, how
+                                                    would you like them sent to you?</div>
+                                                <div class="small text-gray-500">Jae Chun · 1d</div>
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#">
+                                            <div class="dropdown-list-image mr-3">
+                                                <img class="rounded-circle" src="img/undraw_profile_3.svg" alt="...">
+                                                <div class="status-indicator bg-warning"></div>
+                                            </div>
+                                            <div>
+                                                <div class="text-truncate">Last month's report looks great, I am very
+                                                    happy with
+                                                    the progress so far, keep up the good work!</div>
+                                                <div class="small text-gray-500">Morgan Alvarez · 2d</div>
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#">
+                                            <div class="dropdown-list-image mr-3">
+                                                <img class="rounded-circle"
+                                                    src="https://source.unsplash.com/Mv9hjnEUHR4/60x60" alt="...">
+                                                <div class="status-indicator bg-success"></div>
+                                            </div>
+                                            <div>
+                                                <div class="text-truncate">Am I a good boy? The reason I ask is because
+                                                    someone
+                                                    told me that people say this to all dogs, even if they aren't
+                                                    good...</div>
+                                                <div class="small text-gray-500">Chicken the Dog · 2w</div>
+                                            </div>
+                                        </a>
+                                        <a class="dropdown-item text-center small text-gray-500" href="#">Read More
+                                            Messages</a>
+                                    </div>
+                                </li>
+
+                                <div class="topbar-divider d-none d-sm-block"></div>
+
+                                <!-- Nav Item - User Information -->
+                                <li class="nav-item dropdown no-arrow">
+                                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                                        <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
+                                    </a>
+                                    <!-- Dropdown - User Information -->
+                                    <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                        aria-labelledby="userDropdown">
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                            Profile
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                            Settings
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                            Activity Log
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="#" data-toggle="modal"
+                                            data-target="#logoutModal">
+                                            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                            Logout
+                                        </a>
+                                    </div>
+                                </li>
+
+                            </ul>
+
+                        </nav>
+                        <!-- End of Topbar -->
+
+                        <!-- Begin Page Content -->
+                        <div class="container-fluid">
+
+                            <body style="background-color: rgb(237, 236, 236);">
+                                <!-- <nav class="navbar navbar-light bg-light">
+                                    <div class="container-fluid ">
+                                        <a class="navbar-brand">租車後台管理系統</a>
+                                        <form class="d-flex " id="myForm"> -->
+                                            <!-- <button type="button" class="btn btn-primary btn-lg" style="width: 150px; height: 50px;">新增資料</button> -->
+                                            <!-- <button class="btn btn-outline-success" type="submit">button</button> --> 
+                                            <!-- <button class="btn btn-outline-success col-sm-2 " type="button"
+                                                id="datainsert">新增資料</button>  -->
+                                            <!-- <label for="staticEmail" class="col-sm-2 col-form-label" -->
+                                                <!-- style="margin-left:25px ;width:50px;">ID:</label> -->
+                                            <!-- <input id="idSearch" class="form-control me-2 " type="text"
+                                                placeholder="Search" aria-label="Search">
+                                            <button class="btn btn-outline-success" type="button"
+                                                id="idSearchButton">Search</button>
+                                            <label for="staticEmail" class="col-sm-2 col-form-label"
+                                                style="margin-left:25px ;width:50px;">
+                                                name:</label>
+                                            <input id="nameInput" class="form-control me-2 " type="search"
+                                                placeholder="Search" aria-label="Search">
+                                            <button class="btn btn-outline-success" type="button"
+                                                id="nameSearchButton">Search</button>  -->
+                                        <!-- </form>
+                                    </div> 
+                                </nav> -->
+                                
+                                <div style="margin-top: 20px;"></div>
+                                <div id="findall"></div>
+              
+
+                        </div>
+                        <!-- /.container-fluid -->
+
+                    </div>
+                    <!-- End of Main Content -->
+
+                    <!-- Footer -->
+                    <footer class="sticky-footer bg-white">
+                        <div class="container my-auto">
+                            <div class="copyright text-center my-auto">
+                                <span>Copyright &copy; Your Website 2020</span>
+                            </div>
+                        </div>
+                    </footer>
+                    <!-- End of Footer -->
+
+                </div>
+                <!-- End of Content Wrapper -->
+
+            </div>
+            <!-- End of Page Wrapper -->
+
+            <!-- Scroll to Top Button-->
+            <a class="scroll-to-top rounded" href="#page-top">
+                <i class="fas fa-angle-up"></i>
+            </a>
+
+            <!-- Logout Modal-->
+            <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">Select "Logout" below if you are ready to end your current session.
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                            <a class="btn btn-primary" href="login.html">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+</body>
+
+</html>

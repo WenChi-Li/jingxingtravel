@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>訂單確認</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        /* Custom CSS for styling */
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        h4 {
+            color: #007bff;
+        }
+
+        .form-row {
+            margin-bottom: 15px;
+        }
+    </style>
+
+    <script>
+
+
+        //放在body後面也讀得到
+        function displayCarInfo(selectedCar) {
+            console.log(`display   selectedCar`)
+
+            console.log(selectedCar)
+            // 在页面上显示车辆信息，您可以根据需要自定义显示方式
+            $('#carmodelname').text(selectedCar.carmodelname);
+            $('#seat').text(selectedCar.seat);
+            $('#baggage').text(selectedCar.baggage);
+            $('.carmodelname h5').text(selectedCar.carmodelname);
+            $('.seat').text(selectedCar.seat + "人座")
+            $('.baggage').text(selectedCar.baggage + "件行李")
+
+            const carPricePerDay = selectedCar.cost;
+            // // 计算总费用
+            const totalCost = days * carPricePerDay;
+            console.log(`carPricePerDay`, carPricePerDay)
+            // // 更新右侧车辆信息表中的金额显示位置
+            // console.log(((returnDate - pickupDate) / oneDay))
+            $('.cost h7').text(days + '天總計');
+            $('.cost h2').text('NT$' + totalCost);
+            // 其他车辆信息的显示
+
+            // $('#base64').src(selectedCar.base64)
+            $('#base64').attr('src', selectedCar.base64);
+        }
+        // const urlParams = new URLSearchParams(window.location.search);
+        // // 从路径参数中获取车型ID
+        // const carmodelid = urlParams.get('carmodelid');
+        // console.log(carmodelid)
+        // var selectedCar
+
+        // function displayCarInfo(selectedCar) {
+        //     console.log(`selectedCar`)
+        //     console.log(selectedCar)
+        //     console.log(`selectedCar`)
+        //     // 在页面上显示车辆信息，您可以根据需要自定义显示方式
+        //     $('#carmodelname').text(selectedCar.carmodelname);
+        //     $('#seat').text(selectedCar.seat);
+        //     $('#baggage').text(selectedCar.baggage);
+        //     // 其他车辆信息的显示
+        // }
+
+        // 获取当前页面的URL
+        var currentUrl = window.location.href;
+
+        // 解析URL中的查询参数
+        var urlParams = new URLSearchParams(window.location.search);
+
+        // 检查是否存在名为sessionData的查询参数
+        // if (urlParams.has('sessionData')) {
+        //     // 获取sessionData参数的值
+        //     var sessionDataString = urlParams.get('sessionData');
+
+        //     // 解析JSON字符串为JavaScript对象
+        //     var sessionData = JSON.parse(decodeURIComponent(sessionDataString));
+
+        //     // 现在你可以访问sessionData对象中的属性了
+        //     var selectedCar = sessionData.selectedCar;
+        //     var days = sessionData.days;
+
+        //     // 在这里使用获取到的session信息
+        //     console.log('Selected Car:', selectedCar);
+        //     console.log('Days:', days);
+        // } else {
+        //     console.log('No session data found in URL.');
+        // }
+        const selectedCar = JSON.parse(sessionStorage.getItem('selectedCar'));
+        const mid = JSON.parse(sessionStorage.getItem('loginStatus'));
+        // const date = JSON.parse(sessionStorage.getItem('loginStatus'));
+        const days = sessionStorage.getItem('days')
+
+        const sessionpickupDate = sessionStorage.getItem('pickupDate')
+        const sessionreturnDate = sessionStorage.getItem('returnDate')
+        const sessionpickupTime = sessionStorage.getItem('pickupTime')
+        const sessionreturnTime = sessionStorage.getItem('returnTime')
+        var pickupdatetimeValue = sessionpickupDate + 'T' + sessionpickupTime
+        var returndatetimeValue = sessionreturnDate + 'T' + sessionreturnTime
+        console.log(pickupdatetimeValue)
+        console.log(returndatetimeValue)
+        var datetimeValue = sessionpickupDate + 'T' + sessionpickupTime; // 格式为 "YYYY-MM-DDTHH:mm"
+        console.log(datetimeValue)
+        var time = new Date('1970-01-01T' + sessionpickupTime + 'Z'); // 将时间字符串解释为UTC时间
+        var timestamp = sessionpickupDate + 'T' + time.toISOString().substr(11, 8); // 格式为 "YYYY-MM-DDTHH:mm:ss"
+        console.log(time)
+        console.log(timestamp)
+
+        // function calculateAmount() {
+
+
+        // // 获取取车日期和还车日期的值
+        // const pickupDate = new Date($('#pickupDate').val());
+        // const returnDate = new Date($('#returnDate').val());
+
+        // // 计算租车天数
+        // const oneDay = 24 * 60 * 60 * 1000; // 一天的毫秒数
+        // const days = Math.round(Math.abs((returnDate - pickupDate) / oneDay));
+        // // 假设车辆的价格为每天100元
+        // const carPricePerDay = selectedCar.cost;
+        // // // 计算总费用
+        // totalCost = days * carPricePerDay;
+        // console.log(`carPricePerDay`, carPricePerDay)
+        // // // 更新右侧车辆信息表中的金额显示位置
+        // // console.log(((returnDate - pickupDate) / oneDay))
+        // $('.cost h7').text(days + '天總計');
+        // $('.cost h2').text('NT$' + totalCost); // 假设金额显示位置为右侧车辆信息表中的某个元素
+        // 如果需要发送到服务器进行进一步处理，可以在此处添加代码
+
+        // }
+        // const carPricePerDay = selectedCar.cost;
+        // // 计算总费用
+        // const totalCost = days * carPricePerDay;
+
+        // console.log(`carPricePerDay`, carPricePerDay)
+        // // 更新右侧车辆信息表中的金额显示位置
+        // console.log(((returnDate - pickupDate) / oneDay))
+        // $('.cost h7').text(days + '天總計');
+        // $('.cost h2').text('NT$' + totalCost)
+        let totalCost
+        $(function () {
+            // 获取会话中存储的车辆信息
+            console.log(selectedCar)
+            console.log(mid)
+            console.log(days)
+            console.log(sessionpickupDate)
+            console.log(sessionreturnDate)
+            console.log(sessionpickupTime)
+            console.log(sessionreturnTime)
+            // (selectedCar && mid && days && sessionpickupDate && sessionreturnDate
+            // const selectedCar = JSON.parse(sessionStorage.getItem('selectedCar'));
+            if (!mid) {
+                window.location.href = 'http://localhost:8080/login';
+                alert('請先登入會員')
+            } else if (selectedCar && mid && days && sessionpickupDate && sessionreturnDate) {
+                
+                
+                // 显示车辆信息到页面上（假设您有一个名为displayCarInfo的函数来显示车辆信息）
+                console.log(`select`)
+                displayCarInfo(selectedCar);
+                console.log(`select over`)
+                console.log(selectedCar)
+                const carPricePerDay = selectedCar.cost;
+                // // 计算总费用
+                totalCost = days * carPricePerDay;
+                console.log(`carPricePerDay`, carPricePerDay)
+                $('.cost h7').text(days + '天總計');
+                $('.cost h2').text('NT$' + totalCost); // 假设金额显示位置为右侧车辆信息表中的某个元素
+                // calculateAmount()  //家載完先計算 金額
+                // $('#carmodelname').text(selectedCar.carmodelname);
+                // $('#seat').text(selectedCar.seat);
+                // $('#baggage').text(selectedCar.baggage);
+            } else {
+                // 如果会话中没有存储车辆信息，则跳转回首页或其他页面
+                window.location.href = '/html/rentcar/index.html';
+                alert('系統出現錯誤')
+            }
+            // function order() {
+            //     console.log(`dgsdfgsdgf`)
+
+            //     var rentinfo = {
+            //         userdata: mid,
+            //         carmodel: selectedCar
+            //     }
+            //     console.log(rentinfo)
+
+
+            //     $.ajax({
+            //         type: 'post',
+            //         url: '/rentinfo/insert',
+            //         contentType: 'application/json',
+            //         data: JSON.stringify(rentinfo),
+            //         success: function (response) {
+            //             console.log(`success`)
+            //         },
+            //         error: function (error) {
+            //             console.log(`error`)
+            //         }
+            //     })
+            // }
+            // function order() {
+            //     console.log(`order`)
+
+            //     var rentinfo = {
+            //         userdata: mid,
+            //         carmodel: selectedCar
+            //     }
+            //     console.log(rentinfo)
+            //     insertRentcarinfo(rentinfo)
+            // }
+
+            // $('#pay').click(function () {
+            //     console.log(`success byid`)
+            //     console.log(`success byid`)
+
+            //     var rentinfo = {
+            //         userdata: mid,
+            //         carmodel: selectedCar
+            //     }
+
+            //     // insertRentcarinfo()
+            //     $.ajax({
+            //         type: 'post',
+            //         url: '/findCarModelById',
+            //         data: JSON.stringify(rentinfo),
+            //         contentType: 'application/json',
+            //         success: function (response) {
+            //             resolve(response)
+            //             console.log(`success byid`)
+            //         },
+            //         error: function (error) {
+            //             reject(error)
+            //             console.log(`error by id`)
+            //         }
+            //     })
+
+            // })
+
+
+
+        });//結束點
+
+
+
+        //付款按鈕
+        $(document).on('click', '#pay', function () {
+            console.log(`success byid`)
+            console.log(`success byid`)
+
+            console.log($('#pickupDate').val())
+            console.log($('#returnDate').val())
+
+            var title = $('#title').val();
+            var name = $('#name').val();
+            var phone = $('#phone').val();
+            var email = $('#email').val();
+            var pickupDate = $('#pickupDate').val();
+            var returnDate = $('#returnDate').val();
+            var address = $('#address').val();
+            console.log(`sessionpickupDate`, sessionpickupDate);
+            console.log(`sessionreturnDate`, sessionreturnDate);
+            //拿session 放入input
+
+            // pickupDate = sessionpickupDate
+            // returnDate = sessionreturnDate
+
+
+            $('#errorMsg')
+            // 示例：将字段值显示到控制台
+            console.log('Title:', title);
+            console.log('Name:', name);
+            console.log('Phone:', phone);
+            console.log('Email:', email);
+            console.log('Pickup Date:', pickupDate);
+            console.log('Return Date:', returnDate);
+            console.log('Address:', address);
+            console.log('totalCost:', totalCost);
+            // 去除字串空格
+            title = title.trim();
+            name = name.trim();
+            phone = phone.trim();
+            email = email.trim();
+            pickupDate = pickupDate.trim();
+            returnDate = returnDate.trim();
+            address = address.trim();
+
+            if (!title || !name || !phone || !email || !pickupDate || !returnDate || !address) {
+                alert('所有字段都必須填寫');
+                return;
+            }
+            // 判断姓名、电话和邮箱是否包含空格
+            if (name.indexOf(' ') !== -1 || phone.indexOf(' ') !== -1 || email.indexOf(' ') !== -1) {
+                alert('姓名、電話和郵件不能包含空格');
+                return;
+            }
+
+            var currentTime = new Date();
+            var pickupDateTime = new Date(pickupDate);
+            var returnDateTime = new Date(returnDate);
+            console.log(currentTime);
+            console.log(returnDateTime);
+            console.log(pickupDateTime);
+            // 检查取车日期是否早于当前日期
+            if (pickupDateTime < currentTime) {
+                alert('取車日期不能早於當前日期');
+                return;
+            }
+            // 检查还车日期是否早于取车日期
+            if (returnDateTime < pickupDateTime) {
+                alert('還車日期不能早於取車日期');
+
+                return;
+            }
+
+            if (pickupDateTime == returnDateTime) {
+                alert('取車還車不能在同一天');
+                pickupDate = ''
+                returnDate = ''
+                return;
+            }
+            var rentinfo = {
+                status: "待處理",
+                // pickupDateTime: sessionpickupDate,timestamp  ,datetimeValue
+                pickupDateTime: pickupdatetimeValue,
+                returnDateTime: returndatetimeValue,
+                totalCost: totalCost,
+                content: '',
+                returnTime: sessionreturnTime + ":00",
+                pickupTime: sessionpickupTime + ":00",
+                pickupDate: pickupDate,
+                returnDate: returnDate,
+                licensePlate: '',
+                userdata: mid,
+                carmodel: selectedCar
+            }
+            $.ajax({
+                type: 'post',
+                url: '/rentinfo/insert',
+                data: JSON.stringify(rentinfo),
+                contentType: 'application/json',
+                success: function (response) {
+                    console.log(`success insert`)
+                    window.location.href = '/html/rentcar/orderSuccess.html'
+
+                    // resolve(response)
+                },
+                error: function (error) {
+                    reject(error)
+                    console.log(`error by id`)
+                }
+            })
+        }) //pay 結束點
+
+
+
+        //計算天數跟金額費用
+        // function calculateAmount() {
+
+
+        //     // // 获取取车日期和还车日期的值
+        //     // const pickupDate = new Date($('#pickupDate').val());
+        //     // const returnDate = new Date($('#returnDate').val());
+
+        //     // // 计算租车天数
+        //     // const oneDay = 24 * 60 * 60 * 1000; // 一天的毫秒数
+        //     // const days = Math.round(Math.abs((returnDate - pickupDate) / oneDay));
+        //     // // 假设车辆的价格为每天100元
+        //     const carPricePerDay = selectedCar.cost;
+        //     // // 计算总费用
+        //      totalCost = days * carPricePerDay;
+        //     console.log(`carPricePerDay`, carPricePerDay)
+        //     // // 更新右侧车辆信息表中的金额显示位置
+        //     // console.log(((returnDate - pickupDate) / oneDay))
+        //     $('.cost h7').text(days + '天總計');
+        //     $('.cost h2').text('NT$' + totalCost); // 假设金额显示位置为右侧车辆信息表中的某个元素
+        //     // 如果需要发送到服务器进行进一步处理，可以在此处添加代码
+
+        // }
+        // 在选择取车日期和还车日期后调用计算金额的函数
+        // $(document).on('change', '#pickupDate, #returnDate', function () {
+        // $('#pickupDate, #returnDate').change(function () {
+        // console.log(` calculate`)
+        // calculateAmount();
+        // });
+        // })
+        // function insertRentcarinfo(rentinfo) {
+        // console.log(`insertRentcarinfo`)
+        // $.ajax({
+        //     type: 'post',
+        //     url: '/rentinfo/insert',
+        //     contentType: 'application/json',
+        //     data: JSON.stringify(rentinfo),
+        //     success: function (response) {
+        //         console.log(`success`)
+        //     },
+        //     error: function (error) {
+        //         console.log(`error`)
+        //     }
+        // })
+        // }
+        // function order() {
+        //     console.log(`order`)
+        //     var rentinfo = {
+        //         userdata: mid,
+        //         carmodel: selectedCar
+        //     }
+        //     console.log(rentinfo)
+        //     insertRentcarinfo(rentinfo)
+        // }
+        // function order() {
+        //     console.log(`dgsdfgsdgf`)
+        //     var rentinfo = {
+        //         userdata: mid,
+        //         carmodel: selectedCar
+        //     }
+        //     console.log(rentinfo)
+        //     $.ajax({
+        //         type: 'post',
+        //         url: '/rentinfo/insert',
+        //         contentType: 'application/json',
+        //         data: JSON.stringify(rentinfo),
+        //         success: function (response) {
+        //             console.log(`success`)
+        //         },
+        //         error: function (error) {
+        //             console.log(`error`)
+        //         }
+        //     })
+        // }
+    </script>
+
+
+</head>
+
+<body>
+    <!-- test -->
+    <!-- <div style="height: 150px;">
+        <h1 id="carmodelname"></h1>
+        <h1 id="seat"></h1>
+        <h1 id="baggage"></h1>
+    </div> -->
+    <div class="container">
+        <!-- <div style="height: 150px;">
+            <h1 id="carmodelname">fdg</h1>
+            <h1 id="seat"></h1>
+            <h1 id="baggage"></h1>
+        </div> -->
+        <h4>結帳</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <form>
+                    <div class="form-group">
+                        <label for="title">稱謂</label>
+                        <select id="title" class="form-control">
+                            <option value="Mr">先生</option>
+                            <option value="Miss">小姐</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">姓名</label>
+                        <input type="text" class="form-control" id="name" placeholder="請輸入姓名">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">電話</label>
+                        <input type="tel" class="form-control" id="phone" placeholder="請輸入行動電話">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" placeholder="請輸入電子郵件">
+                    </div>
+                    <div class="form-group">
+                        <label for="pickupDate">取車日期</label>
+                        <input type="date" class="form-control" id="pickupDate" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="returnDate">還車日期</label>
+                        <input type="date" class="form-control" id="returnDate" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">地址</label>
+                        <input type="text" class="form-control" id="address" placeholder="請輸入地址">
+                    </div>
+                    <div class="alert alert-danger" id="errorMsg" style="display: none;">
+                        <p></p>
+                    </div>
+                    <!-- <button type="submit" class="btn btn-primary">提交</button> -->
+                </form>
+            </div>
+
+            <!-- 右邊的車資訊 -->
+            <div class="col-md-6">
+                <div id="carInfo" style="margin-left: 250px;">
+                    <div class="card" style="width: 22rem;">
+                        <img src="" class="card-img-top" alt="..." id="base64">
+                        <div class="card-body carmodelname">
+                            <h5 class="card-title" id=""></h5>
+                            <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk
+                                of the card's content.</p> -->
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <!-- 人數 -->
+                            <li class="list-group-item seat"></li>
+                            <!-- 行李 -->
+                            <li class="list-group-item baggage"></li>
+                            <!-- 費用 -->
+                            <li class="list-group-item cost">
+
+                                <h7></h7>
+                                <h2></h2>
+                            </li>
+                        </ul>
+                        <!-- <div class="card-body">
+                            <a class="card-link" onclick="order()">Card link</a>
+                            <a href="#" class="card-link">Another link</a>
+                        </div> -->
+                        <div class="card-body">
+                            <button type="submit" class="btn btn-primary" id="pay">付款</button>
+                        </div>
+                        </form>
+                    </div>
+                    <!-- Selected car information will be displayed here -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- Bootstrap JS and dependencies -->
+    <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // document.getElementById('pickupDate').value = sessionpickupDate;
+        // document.getElementById('returnDate').value = sessionreturnDate;
+
+        $('#pickupDate').val(sessionpickupDate);
+        $('#returnDate').val(sessionreturnDate);
+
+        $('#pickupDate, #returnDate').change(function () {
+            console.log(` calculate`)
+            calculateAmount();
+        });
+        // function insertRentcarinfo(rentinfo) {
+
+        //     $.ajax({
+        //         type: 'post',
+        //         url: '/rentinfo/insert',
+        //         contentType: 'application/json',
+        //         data: JSON.stringify(rentinfo),
+        //         success: function (response) {
+        //             console.log(`success`)
+        //         },
+        //         error: function (error) {
+        //             console.log(`error`)
+        //         }
+        //     })
+        // }
+
+
+        // function displayCarInfo(selectedCar) {
+        //     console.log(selectedCar)
+        //     // 在页面上显示车辆信息，您可以根据需要自定义显示方式
+        //     $('#carmodelname').text(selectedCar.carmodelname);
+        //     $('#seat').text(selectedCar.seat);
+        //     $('#baggage').text(selectedCar.baggage);
+        //     // 其他车辆信息的显示
+        // }
+        // Dummy data representing selected car information
+        // const selectedCar = {
+        //     carModel: 'Toyota Camry',
+        //     color: 'Red',
+        //     year: 2022,
+        //     price: 50 // or whatever pricing information you want to display
+        // };
+
+        // Function to display selected car information
+        // function displayCarInfo(car) {
+        //     const carInfoDiv = document.getElementById('carInfo');
+        //     carInfoDiv.innerHTML = `
+        //         <h5>已選擇車輛</h5>
+        //         <p>車型: ${car.carModel}</p>
+        //         <p>顏色: ${car.color}</p>
+        //         <p>年份: ${car.year}</p>
+        //         <p>價格: $${car.price}/天</p>
+        //     `;
+        // }
+        // function displayCarInfo(selectedCar) {
+        //     console.log(`selectedCar`)
+        //     console.log(selectedCar)
+        //     console.log(`selectedCar`)
+        //     // 在页面上显示车辆信息，您可以根据需要自定义显示方式
+        //     $('#carmodelname').text(selectedCar.carmodelname);
+        //     $('#seat').text(selectedCar.seat);
+        //     $('#baggage').text(selectedCar.baggage);
+        //     // 其他车辆信息的显示
+        // }
+
+        // Call the function to display car information
+        // displayCarInfo(selectedCar);
+        // $(document).on('change', '#pickupDate, #returnDate', function () {
+
+    </script>
+</body>
+
+</html>

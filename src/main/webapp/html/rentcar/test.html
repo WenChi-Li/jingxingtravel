@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>取車還車及日期選擇</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+        <h2>取車還車及日期選擇</h2>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="pickupSelect">取車地點：</label>
+                    <select id="pickupSelect" class="form-control" required>
+                        <option value="">請選擇取車地點</option>
+                        <option value="台北">台北</option>
+                        <option value="高雄">高雄</option>
+                        <option value="台中">台中</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="returnSelect">還車地點：</label>
+                    <select id="returnSelect" class="form-control" required>
+                        <option value="">請選擇還車地點</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="pickupDate">取車日期：</label>
+                    <input type="date" id="pickupDate" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="returnDate">還車日期：</label>
+                    <input type="date" id="returnDate" class="form-control" required>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-danger" id="errorMsg" style="display: none;">
+        <p></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+    <script>
+        const pickupSelect = document.getElementById('pickupSelect');
+        const returnSelect = document.getElementById('returnSelect');
+        const pickupDate = document.getElementById('pickupDate');
+        const returnDate = document.getElementById('returnDate');
+        const errorMsg = document.getElementById('errorMsg');
+        const locations = {
+            台北: ['台北車站', '松山車站', '萬華車站'],
+            高雄: ['高雄車站', '左營車站', '新左營車站'],
+            台中: ['臺中車站', '新烏日車站', '烏日高鐵站'],
+        };
+
+        pickupSelect.addEventListener('change', () => {
+            const selectedLocation = pickupSelect.value;
+            const options = locations[selectedLocation];
+
+            returnSelect.options.length = 0;
+            returnSelect.options.add(new Option('請選擇還車地點', ''));
+
+            for (const option of options) {
+                returnSelect.options.add(new Option(option, option));
+            }
+
+            returnSelect.disabled = false;
+        });
+
+        returnSelect.addEventListener('change', () => {
+            // 在这里可以添加其他逻辑，例如确保取车和还车地点不同
+        });
+
+        pickupDate.addEventListener('change', () => {
+            const today = new Date();
+            const selectedDate = new Date(pickupDate.value);
+
+            if (selectedDate < today) {
+                errorMsg.textContent = '取車日期不可早於當前日期';
+                errorMsg.style.display = 'block';
+                pickupDate.value = '';
+            } else {
+                errorMsg.style.display = 'none';
+            }
+
+            // 检查取车日期是否晚于还车日期，如果是，则重置还车日期
+            if (returnDate.value && selectedDate > new Date(returnDate.value)) {
+                errorMsg.textContent = '取車日期不可晚於還車日期';
+                errorMsg.style.display = 'block';
+                returnDate.value = '';
+            }
+        });
+
+        returnDate.addEventListener('change', () => {
+            const selectedPickupDate = new Date(pickupDate.value);
+            const selectedReturnDate = new Date(returnDate.value);
+
+            // 检查还车日期是否早于取车日期，如果是，则重置还车日期
+            if (selectedPickupDate > selectedReturnDate) {
+                errorMsg.textContent = '還車日期不可早於取車日期';
+                errorMsg.style.display = 'block';
+                returnDate.value = '';
+            } else {
+                errorMsg.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>
