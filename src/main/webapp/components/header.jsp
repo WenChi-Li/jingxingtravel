@@ -14,7 +14,11 @@
 <!-- <link rel="stylesheet" href="/css/style.css"> -->
 <!-- <link rel="stylesheet" href="/css/responsive.css"> -->
 
-
+<style>
+    #memberHeader {
+        background-color: white; /* 將背景顏色設置為白色 */
+    }
+</style>
 
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
 	
